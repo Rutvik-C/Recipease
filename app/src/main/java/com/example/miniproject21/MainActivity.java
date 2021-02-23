@@ -21,5 +21,6 @@ public class MainActivity extends AppCompatActivity {
     public void nextPage(View view){
         Intent intent = new Intent(MainActivity.this, HomePage.class);
         startActivity(intent);
+        finish();
     }
 }

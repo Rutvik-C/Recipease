@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.miniproject21.FragmentSet1.HistoryPageFragment;
 
-public class MainFragmentAdapter   extends FragmentPagerAdapter {
+public class MainFragmentAdapter extends FragmentPagerAdapter {
 
     public MainFragmentAdapter(FragmentManager fm)
     {
@@ -18,17 +18,19 @@ public class MainFragmentAdapter   extends FragmentPagerAdapter {
         super(fm, behavior);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position)
     {
         if (position == 0) {
-            return new HistoryPageFragment();
+            return new com.example.miniproject21.UploadPageFragment();
+
         }
         else if (position == 1) {
-            return new com.example.miniproject21.UploadPageFragment();
+            return new com.example.miniproject21.SearchPageFragment();
         }
         else {
-            return new com.example.miniproject21.SearchPageFragment();
+            return new HistoryPageFragment();
         }
     }
 
