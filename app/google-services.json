@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "836189547479",
+    "project_id": "image2recipe",
+    "storage_bucket": "image2recipe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836189547479:android:3bc3d0765893451c567992",
+        "android_client_info": {
+          "package_name": "com.example.miniproject21"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836189547479-u7pe5181vd5rmap480gpbmpd9ggg95a2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2HsIRiC_CLaNXjQO_RLzMzCrYbYVmZkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836189547479-u7pe5181vd5rmap480gpbmpd9ggg95a2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
