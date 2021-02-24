@@ -15,7 +15,7 @@ public class HomePage extends AppCompatActivity {
 
         MainFragmentAdapter adapter = new MainFragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
+        viewPager.setCurrentItem(1);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.miniproject21;
+package com.example.miniproject21.FragmentSet1;
 
 import android.os.Bundle;
 
@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.miniproject21.R;
 
 public class UploadPageFragment extends Fragment {
     @Override
