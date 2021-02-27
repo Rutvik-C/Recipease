@@ -154,8 +154,10 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 databaseReference = firebaseDatabase.getReference("users");
                                 assert user != null;
                                 databaseReference.child(user.getUid()).child("email").setValue(email);
-                                for(int i=1;i<=listItems.size();i++){
-                                    databaseReference.child(user.getUid()).child("allergens").child(String.valueOf(i)).setValue(listItems.get(i-1));
+                                if(!listItems.contains("none")){
+                                    for(int i=1;i<=listItems.size();i++){
+                                        databaseReference.child(user.getUid()).child("allergens").child(String.valueOf(i)).setValue(listItems.get(i-1));
+                                    }
                                 }
                                 // Sign in success, update UI with the signed-in user's information
                                 //Log.d(TAG, "createUserWithEmail:success");
@@ -183,9 +185,9 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        if (firebaseAuth.getCurrentUser() != null) {
-            launchHomeActivity();
-        }
+//        if (firebaseAuth.getCurrentUser() != null) {
+//            launchHomeActivity();
+//        }
 
         textViewToggle = findViewById(R.id.textViewToggle);
 
@@ -219,12 +221,25 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         allergenListView.setAdapter(adapter);
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) { //to add allergen to listview
-                Log.i("selected allergen: ", arg0.getItemAtPosition(arg2).toString());
+                if(arg0.getItemAtPosition(arg2).toString().equals("none") && listItems.size()!=0){
+                    Toast.makeText(MainActivity.this,"Cannot choose none as allergens already present in you list.", Toast.LENGTH_SHORT).show();
+                }
+                else if(listItems.contains( arg0.getItemAtPosition(arg2).toString())){
+                    Toast.makeText(MainActivity.this,"Allergen already present in your list!", Toast.LENGTH_SHORT).show();
+                }
+                else if(listItems.contains("none")){
+                    Toast.makeText(MainActivity.this,"Cannot add allergen as you have selected none", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Log.i("selected allergen: ", arg0.getItemAtPosition(arg2).toString());
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+                    listItems.add(arg0.getItemAtPosition(arg2).toString());
+                    autoCompleteTextView.setText("");
+                    adapter.notifyDataSetChanged();
+                }
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
-                listItems.add(arg0.getItemAtPosition(arg2).toString());
-                autoCompleteTextView.setText("");
-                adapter.notifyDataSetChanged();
             }
         });
         allergenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
