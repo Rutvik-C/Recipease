@@ -154,11 +154,9 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 databaseReference = firebaseDatabase.getReference("users");
                                 assert user != null;
                                 databaseReference.child(user.getUid()).child("email").setValue(email);
-                                if(!listItems.contains("none")){
                                     for(int i=1;i<=listItems.size();i++){
                                         databaseReference.child(user.getUid()).child("allergens").child(String.valueOf(i)).setValue(listItems.get(i-1));
                                     }
-                                }
                                 // Sign in success, update UI with the signed-in user's information
                                 //Log.d(TAG, "createUserWithEmail:success");
                                 launchHomeActivity();
@@ -212,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         RelativeLayout background = findViewById(R.id.relativeLayout);
         background.setOnKeyListener(this);
 
-        String[] allergens={"egg","peanuts","soy","wheat","nuts","shellfish","sesame seeds","garlic","maze","poultry meat","none"};
+        String[] allergens={"egg","peanuts","soy","wheat","nuts","shellfish","sesame seeds","garlic","maze","poultry meat"};
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, allergens);
         autoCompleteTextView.setAdapter(arrayAdapter);
         autoCompleteTextView.setThreshold(1);
@@ -221,14 +219,8 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         allergenListView.setAdapter(adapter);
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) { //to add allergen to listview
-                if(arg0.getItemAtPosition(arg2).toString().equals("none") && listItems.size()!=0){
-                    Toast.makeText(MainActivity.this,"Cannot choose none as allergens already present in you list.", Toast.LENGTH_SHORT).show();
-                }
-                else if(listItems.contains( arg0.getItemAtPosition(arg2).toString())){
+                if(listItems.contains( arg0.getItemAtPosition(arg2).toString())){
                     Toast.makeText(MainActivity.this,"Allergen already present in your list!", Toast.LENGTH_SHORT).show();
-                }
-                else if(listItems.contains("none")){
-                    Toast.makeText(MainActivity.this,"Cannot add allergen as you have selected none", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Log.i("selected allergen: ", arg0.getItemAtPosition(arg2).toString());
