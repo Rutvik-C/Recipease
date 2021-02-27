@@ -15,7 +15,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="40dp"
         android:hint="Password"
-        android:inputType="textPersonName"
+        android:inputType="textPersonName|textPassword"
         android:textColor="#FFFFFF"
         android:textColorHint="#BFFFFFFF"
         app:layout_constraintEnd_toEndOf="parent"

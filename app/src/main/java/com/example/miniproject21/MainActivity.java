@@ -102,7 +102,28 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
 
         Log.i("LOGIN", " " + email + " " + password);
 
-        // I'll add firebase auth later
+        if (email.equals("") || password.equals("")) {
+            Toast.makeText(this, "Please enter all details", Toast.LENGTH_SHORT).show();
+        } else {
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                FirebaseUser user = firebaseAuth.getCurrentUser();
+                                assert user != null;
+                                Log.i("SUCCESS", "Logged in " + user.getDisplayName());
+                                launchHomeActivity();
+
+                            } else {
+
+                                Log.i("FAIL", "Log in failed " + task.getException());
+                                Toast.makeText(MainActivity.this, "Failed to Log In", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+
     }
 
     public void doSignup(View view) {
@@ -131,21 +152,21 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                             if (task.isSuccessful()) {
                                 firebaseDatabase = FirebaseDatabase.getInstance();
                                 databaseReference = firebaseDatabase.getReference("users");
+                                assert user != null;
                                 databaseReference.child(user.getUid()).child("email").setValue(email);
                                 for(int i=1;i<=listItems.size();i++){
                                     databaseReference.child(user.getUid()).child("allergens").child(String.valueOf(i)).setValue(listItems.get(i-1));
                                 }
                                 // Sign in success, update UI with the signed-in user's information
                                 //Log.d(TAG, "createUserWithEmail:success");
-                                Intent intent = new Intent(MainActivity.this, HomePage.class);
-                                startActivity(intent);
-                                finish();
+                                launchHomeActivity();
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 //Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                 //Toast.makeText(EmailPasswordActivity.this, "Authentication failed."Toast.LENGTH_SHORT).show();
                                 Log.i("FAIL", "Sign Up failed " + task.getException());
-                                Toast.makeText(MainActivity.this, "Failed to Sign Up", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
 
                             // ...
@@ -161,6 +182,10 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         setContentView(R.layout.activity_main);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        if (firebaseAuth.getCurrentUser() != null) {
+            launchHomeActivity();
+        }
 
         textViewToggle = findViewById(R.id.textViewToggle);
 
@@ -198,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
                 listItems.add(arg0.getItemAtPosition(arg2).toString());
+                autoCompleteTextView.setText("");
                 adapter.notifyDataSetChanged();
             }
         });
@@ -212,40 +238,4 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
 
     }
 
-
-//    public void logIn(View view){
-//          EditText editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-//          EditText editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-//        String email = editTextEmail.getText().toString();
-//        String password = editTextPassword.getText().toString();
-//        if (email.equals("") || password.equals("")) {
-//            Toast.makeText(this, "Please enter all details", Toast.LENGTH_SHORT).show();
-//        }
-//        else {
-//            firebaseAuth.signInWithEmailAndPassword(email, password)
-//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                            if (task.isSuccessful()) {
-//                                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                                assert user != null;
-//                                Log.i("SUCCESS", "Logged in " + user.getDisplayName());
-//                                Intent intent = new Intent(MainActivity.this, HomePage.class);
-//                                startActivity(intent);
-//                                finish();
-//
-//                            } else {
-//
-//                                Log.i("FAIL", "Log in failed " + task.getException());
-//                                Toast.makeText(MainActivity.this, "Failed to Log In", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    });
-//        }
-//    }
-//    public void signUp(View view){
-//        Intent intent = new Intent(MainActivity.this, SignUp.class);
-//        startActivity(intent);
-//        finish();
-//    }
 }
