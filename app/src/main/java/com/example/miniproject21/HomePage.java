@@ -3,9 +3,13 @@ package com.example.miniproject21;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.os.Bundle;
 
 public class HomePage extends AppCompatActivity {
+
+    public static Context contextOfApplication;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +20,8 @@ public class HomePage extends AppCompatActivity {
         MainFragmentAdapter adapter = new MainFragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
+
+        contextOfApplication = getApplicationContext();
     }
 
     @Override

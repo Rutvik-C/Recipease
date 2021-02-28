@@ -183,9 +183,9 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-//        if (firebaseAuth.getCurrentUser() != null) {
-//            launchHomeActivity();
-//        }
+        if (firebaseAuth.getCurrentUser() != null) {
+            launchHomeActivity();
+        }
 
         textViewToggle = findViewById(R.id.textViewToggle);
 
