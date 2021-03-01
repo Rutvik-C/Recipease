@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
     TextView textViewToggle;
     Button buttonLogin, buttonSignup;
     EditText editTextEmail, editTextPasswordLogin, editTextPasswordSignup, editTextPasswordSignupAgain;
-    AutoCompleteTextView autoCompleteTextView;
     boolean isLoginOnScreen;
     final String SIGN_UP_HERE = "New user? Signup here";
     final String LOG_IN_HERE = "Already a user? Login here";
@@ -75,10 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
             buttonLogin.setVisibility(View.INVISIBLE);
             buttonSignup.setVisibility(View.VISIBLE);
             editTextPasswordLogin.setVisibility(View.INVISIBLE);
-            autoCompleteTextView.setVisibility(View.VISIBLE);
             editTextPasswordSignup.setVisibility(View.VISIBLE);
             editTextPasswordSignupAgain.setVisibility(View.VISIBLE);
-            allergenListView.setVisibility(View.VISIBLE);
             toggleText = LOG_IN_HERE;
 
         } else {
@@ -86,10 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
             buttonLogin.setVisibility(View.VISIBLE);
             buttonSignup.setVisibility(View.INVISIBLE);
             editTextPasswordLogin.setVisibility(View.VISIBLE);
-            autoCompleteTextView.setVisibility(View.INVISIBLE);
             editTextPasswordSignup.setVisibility(View.INVISIBLE);
             editTextPasswordSignupAgain.setVisibility(View.INVISIBLE);
-            allergenListView.setVisibility(View.INVISIBLE);
             toggleText = SIGN_UP_HERE;
         }
 
@@ -133,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         String password = editTextPasswordSignup.getText().toString();
         String passwordAgain = editTextPasswordSignupAgain.getText().toString();
 
-        Log.i("SIGN IN", email + " " + password + " " + passwordAgain + " " + listItems.toString());
+        Log.i("SIGN IN", email + " " + password + " " + passwordAgain );
         // allergen is the auto complete text view
         // allergen list view is the list view to display the allergens
         // Just copy paste your logic of adding items in list view
@@ -154,9 +149,6 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 databaseReference = firebaseDatabase.getReference("users");
                                 assert user != null;
                                 databaseReference.child(user.getUid()).child("email").setValue(email);
-                                    for(int i=1;i<=listItems.size();i++){
-                                        databaseReference.child(user.getUid()).child("allergens").child(String.valueOf(i)).setValue(listItems.get(i-1));
-                                    }
                                 // Sign in success, update UI with the signed-in user's information
                                 //Log.d(TAG, "createUserWithEmail:success");
                                 launchHomeActivity();
@@ -183,9 +175,9 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        if (firebaseAuth.getCurrentUser() != null) {
-            launchHomeActivity();
-        }
+//        if (firebaseAuth.getCurrentUser() != null) {
+//            launchHomeActivity();
+//        }
 
         textViewToggle = findViewById(R.id.textViewToggle);
 
@@ -194,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         editTextPasswordSignup = findViewById(R.id.editTextPasswordSignup);
         editTextPasswordSignupAgain = findViewById(R.id.editTextPasswordSignupAgain);
 
-        autoCompleteTextView = findViewById(R.id.autoCompleteEditTextAllergens);
-
         buttonLogin = findViewById(R.id.buttonLogin);
         buttonSignup = findViewById(R.id.buttonSignup);
 
@@ -203,45 +193,8 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         buttonLogin.setVisibility(View.VISIBLE);
         buttonSignup.setVisibility(View.INVISIBLE);
         editTextPasswordLogin.setVisibility(View.VISIBLE);
-        autoCompleteTextView.setVisibility(View.INVISIBLE);
         editTextPasswordSignup.setVisibility(View.INVISIBLE);
         editTextPasswordSignupAgain.setVisibility(View.INVISIBLE);
-
-        RelativeLayout background = findViewById(R.id.relativeLayout);
-        background.setOnKeyListener(this);
-
-        String[] allergens={"egg","peanuts","soy","wheat","nuts","shellfish","sesame seeds","garlic","maze","poultry meat"};
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, allergens);
-        autoCompleteTextView.setAdapter(arrayAdapter);
-        autoCompleteTextView.setThreshold(1);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, listItems);
-        allergenListView = findViewById(R.id.listViewAllergens);
-        allergenListView.setAdapter(adapter);
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) { //to add allergen to listview
-                if(listItems.contains( arg0.getItemAtPosition(arg2).toString())){
-                    Toast.makeText(MainActivity.this,"Allergen already present in your list!", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Log.i("selected allergen: ", arg0.getItemAtPosition(arg2).toString());
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
-                    listItems.add(arg0.getItemAtPosition(arg2).toString());
-                    autoCompleteTextView.setText("");
-                    adapter.notifyDataSetChanged();
-                }
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
-            }
-        });
-        allergenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { //to delete allergen on clicking
-                listItems.remove(i);
-                adapter.notifyDataSetChanged();
-            }
-        });
-        allergenListView.setVisibility(View.INVISIBLE);
 
     }
 

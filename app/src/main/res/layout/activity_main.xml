@@ -68,21 +68,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPasswordSignup" />
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteEditTextAllergens"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="40dp"
-        android:hint="Enter allergens if any"
-        android:inputType="textAutoComplete"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#BFFFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordSignupAgain" />
-
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="0dp"
@@ -102,10 +87,10 @@
 
     <Button
         android:id="@+id/buttonSignup"
-        android:layout_width="0dp"
+        android:layout_width="333dp"
         android:layout_height="50dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="33dp"
         android:layout_marginEnd="40dp"
         android:onClick="doSignup"
         android:text="Sign up"
@@ -114,7 +99,7 @@
         app:backgroundTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listViewAllergens" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
 
     <TextView
         android:id="@+id/textViewToggle"
@@ -132,25 +117,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <ListView
-        android:id="@+id/listViewAllergens"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/autoCompleteEditTextAllergens" />
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="408dp"
-        android:layout_height="675dp"
-        tools:layout_editor_absoluteX="3dp"
-        tools:layout_editor_absoluteY="-6dp">
-
-    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
