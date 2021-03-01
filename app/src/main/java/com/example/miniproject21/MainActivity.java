@@ -172,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         firebaseAuth = FirebaseAuth.getInstance();
 
 //        if (firebaseAuth.getCurrentUser() != null) {
