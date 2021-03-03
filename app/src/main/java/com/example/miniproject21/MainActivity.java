@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 assert user != null;
                                 Log.i("SUCCESS", "Logged in " + user.getDisplayName());
-                                //launchHomeActivity();
+                                launchHomeActivity();
 
                             } else {
 

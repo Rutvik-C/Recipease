@@ -137,7 +137,7 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
         FirebaseUser user = firebaseAuth.getCurrentUser();
         databaseReference.child(user.getUid()).child("Spice").setValue(strSpice);
         databaseReference.child(user.getUid()).child("Veg").setValue(strVeg);
-        if(!list.get(0).equals("None")){
+        if(list.size()!=0 && !list.get(0).equals("None")){
             for(int i=0;i<list.size();i++){
                 databaseReference.child(user.getUid()).child("allergens").child(String.valueOf(i+1)).setValue(list.get(i));
             }
