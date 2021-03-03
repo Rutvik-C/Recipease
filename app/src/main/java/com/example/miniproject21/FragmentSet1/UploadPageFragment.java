@@ -49,47 +49,58 @@ public class UploadPageFragment extends Fragment {
     private static final int SELECT_FILE = 8;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
 
-    final int LEN_CLASSES = 118;
+    final int LEN_CLASSES = 250;
     Interpreter interpreter;
     Bitmap bitmap;
     ImageView imageView;
+    TextView textViewResult;
+    String[] CLASSES;
 
 
     public void makePredictions() {
         if (bitmap != null) {
-            Toast.makeText(getActivity(), "Predicting...", Toast.LENGTH_SHORT).show();
-//            Bitmap finalBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true);
-//            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(224 * 224 * 3 * 4).order(ByteOrder.nativeOrder());
-//            for (int y = 0; y < 224; y++) {
-//                for (int x = 0; x < 224; x++) {
-//                    int px = finalBitmap.getPixel(x, y);
-//
-//                    float r = Color.red(px) / 255.0f;
-//                    float g = Color.green(px) / 255.0f;
-//                    float b = Color.blue(px) / 255.0f;
-//
-//                    byteBuffer.putFloat(r);
-//                    byteBuffer.putFloat(g);
-//                    byteBuffer.putFloat(b);
-//                }
-//            }
-//            Log.i("Reached", "pixels adjusted!");
-//
-//            int bufferSize = LEN_CLASSES * Float.SIZE / Byte.SIZE;
-//            ByteBuffer modelOutput = ByteBuffer.allocateDirect(bufferSize).order(ByteOrder.nativeOrder());
-//            interpreter.run(byteBuffer, modelOutput);
-//
-//            FloatBuffer probabilities = modelOutput.asFloatBuffer();
-//            try {
-//                for (int i = 0; i < probabilities.capacity(); i++) {
-//                    // sort and show the max one
-//
-//                    Log.i(String.valueOf(i), String.valueOf(probabilities.get(i)));
-//                }
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            Bitmap finalBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true);
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(224 * 224 * 3 * 4).order(ByteOrder.nativeOrder());
+            for (int y = 0; y < 224; y++) {
+                for (int x = 0; x < 224; x++) {
+                    int px = finalBitmap.getPixel(x, y);
+
+                    float r = Color.red(px) / 255.0f;
+                    float g = Color.green(px) / 255.0f;
+                    float b = Color.blue(px) / 255.0f;
+
+                    byteBuffer.putFloat(r);
+                    byteBuffer.putFloat(g);
+                    byteBuffer.putFloat(b);
+                }
+            }
+            Log.i("Reached", "pixels adjusted!");
+
+            int bufferSize = LEN_CLASSES * Float.SIZE / Byte.SIZE;
+            ByteBuffer modelOutput = ByteBuffer.allocateDirect(bufferSize).order(ByteOrder.nativeOrder());
+            interpreter.run(byteBuffer, modelOutput);
+
+            modelOutput.rewind();
+            FloatBuffer probabilities = modelOutput.asFloatBuffer();
+
+            Log.i("HERE", "Reached before try " + probabilities.capacity());
+
+            int maxIndex = 0;
+            float max = -1;
+            try {
+                for (int i = 0; i < probabilities.capacity(); i++) {
+                    if (probabilities.get(i) > max) {
+                        max = probabilities.get(i);
+                        maxIndex = i;
+                    }
+                }
+
+                //Toast.makeText(getContext(), CLASSES[maxIndex], Toast.LENGTH_SHORT).show();
+                textViewResult.setText(CLASSES[maxIndex] + ": " + probabilities.get(maxIndex));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } else {
             Toast.makeText(getActivity(), "Please select an Image", Toast.LENGTH_SHORT).show();
@@ -173,13 +184,16 @@ public class UploadPageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upload_page, container, false);
 
-//        try {
-//            interpreter = new Interpreter(loadModel());
-//            Log.i("Done", "Model loaded");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        CLASSES = new String[] { "burger", "butter_naan", "chai", "chapati", "chole_bhature", "dal_makhani", "dhokla", "fried_rice", "idli", "jalebi", "kaathi_rolls", "kadai_paneer", "kulfi", "masala_dosa", "momos", "paani_puri", "pakode", "pav_bhaji", "pizza", "samosa" };
+        textViewResult = view.findViewById(R.id.textViewResult);
+
+        try {
+            interpreter = new Interpreter(loadModel());
+            Log.i("Done", "Model loaded");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         imageView = view.findViewById(R.id.imageViewSelectImage);
 
@@ -224,14 +238,14 @@ public class UploadPageFragment extends Fragment {
         return view;
     }
 
-//    private MappedByteBuffer loadModel() throws IOException {
-//        AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifier.tflite");
-//        FileInputStream fileInputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
-//        FileChannel fileChannel = fileInputStream.getChannel();
-//        long startOffset = assetFileDescriptor.getStartOffset();
-//        long declaredLength = assetFileDescriptor.getDeclaredLength();
-//
-//        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-//
-//    }
+    private MappedByteBuffer loadModel() throws IOException {
+        AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifierIndian20.tflite");
+        FileInputStream fileInputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = fileInputStream.getChannel();
+        long startOffset = assetFileDescriptor.getStartOffset();
+        long declaredLength = assetFileDescriptor.getDeclaredLength();
+
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+
+    }
 }
