@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 assert user != null;
                                 Log.i("SUCCESS", "Logged in " + user.getDisplayName());
-                                launchHomeActivity();
+                                //launchHomeActivity();
 
                             } else {
 
@@ -151,7 +151,9 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 databaseReference.child(user.getUid()).child("email").setValue(email);
                                 // Sign in success, update UI with the signed-in user's information
                                 //Log.d(TAG, "createUserWithEmail:success");
-                                launchHomeActivity();
+                                Intent intent = new Intent(MainActivity.this, EditProfile.class);
+                                startActivity(intent);
+                                finish();
 
                             } else {
                                 // If sign in fails, display a message to the user.
