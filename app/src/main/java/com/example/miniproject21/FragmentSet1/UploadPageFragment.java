@@ -8,6 +8,7 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,16 +51,42 @@ public class UploadPageFragment extends Fragment {
     private static final int SELECT_FILE = 8;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
 
-    final int LEN_CLASSES = 250;
-    Interpreter interpreter;
+    static final int LEN_CLASSES = 20;
+    static Interpreter interpreter;
     Bitmap bitmap;
     ImageView imageView;
     TextView textViewResult;
     String[] CLASSES;
+    boolean predicted = false;
 
 
     public void makePredictions() {
         if (bitmap != null) {
+
+            try {
+                Predictor predictor = new Predictor();
+
+                int index = predictor.doInBackground(bitmap);
+
+                predicted = true;
+                textViewResult.setText(CLASSES[index]);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Toast.makeText(getActivity(), "Please select an Image", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    public static class Predictor extends AsyncTask<Bitmap, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(Bitmap... bitmaps) {
+            Bitmap bitmap = bitmaps[0];
+
             Bitmap finalBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true);
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(224 * 224 * 3 * 4).order(ByteOrder.nativeOrder());
             for (int y = 0; y < 224; y++) {
@@ -74,6 +102,7 @@ public class UploadPageFragment extends Fragment {
                     byteBuffer.putFloat(b);
                 }
             }
+
             Log.i("Reached", "pixels adjusted!");
 
             int bufferSize = LEN_CLASSES * Float.SIZE / Byte.SIZE;
@@ -87,24 +116,15 @@ public class UploadPageFragment extends Fragment {
 
             int maxIndex = 0;
             float max = -1;
-            try {
-                for (int i = 0; i < probabilities.capacity(); i++) {
-                    if (probabilities.get(i) > max) {
-                        max = probabilities.get(i);
-                        maxIndex = i;
-                    }
+
+            for (int i = 0; i < probabilities.capacity(); i++) {
+                if (probabilities.get(i) > max) {
+                    max = probabilities.get(i);
+                    maxIndex = i;
                 }
-
-                //Toast.makeText(getContext(), CLASSES[maxIndex], Toast.LENGTH_SHORT).show();
-                textViewResult.setText(CLASSES[maxIndex] + ": " + probabilities.get(maxIndex));
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
-        } else {
-            Toast.makeText(getActivity(), "Please select an Image", Toast.LENGTH_SHORT).show();
-
+            return maxIndex;
         }
     }
 
@@ -231,6 +251,19 @@ public class UploadPageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 makePredictions();
+            }
+        });
+
+        textViewResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (predicted) {
+                    Intent intent = new Intent(getContext(), ResultsActivity.class);
+                    intent.putExtra("item", textViewResult.getText());
+
+                    startActivity(intent);
+
+                }
             }
         });
 
