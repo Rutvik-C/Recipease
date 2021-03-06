@@ -1,6 +1,7 @@
-package com.example.miniproject21.FragmentSet1;
+package com.example.miniproject21;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,12 @@ public class ResultsActivity extends AppCompatActivity {
         String item = intent.getStringExtra("item");
 
         Log.i("INTENT", item);
+
+        ViewPager viewPager = findViewById(R.id.resultsViewPager);
+        ResultFragmentAdapter resultFragmentAdapter = new ResultFragmentAdapter(getSupportFragmentManager());
+
+        viewPager.setAdapter(resultFragmentAdapter);
+        viewPager.setCurrentItem(0);
 
     }
 }

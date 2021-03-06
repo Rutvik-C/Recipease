@@ -38,16 +38,6 @@ public class HomePage extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
 
-        //CLASSES = new String[] { "burger", "butter_naan", "chai", "chapati", "chole_bhature", "dal_makhani", "dhokla", "fried_rice", "idli", "jalebi", "kaathi_rolls", "kadai_paneer", "kulfi", "masala_dosa", "momos", "paani_puri", "pakode", "pav_bhaji", "pizza", "samosa" };
-
-//        try {
-//            interpreter = new Interpreter(loadModel());
-//            Log.i("Done", "Model loaded");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         contextOfApplication = getApplicationContext();
     }
 
@@ -57,14 +47,4 @@ public class HomePage extends AppCompatActivity {
         finish();
     }
 
-//    private MappedByteBuffer loadModel() throws IOException {
-//        AssetFileDescriptor assetFileDescriptor = this.getAssets().openFd("FoodClassifierIndian20.tflite");
-//        FileInputStream fileInputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
-//        FileChannel fileChannel = fileInputStream.getChannel();
-//        long startOffset = assetFileDescriptor.getStartOffset();
-//        long declaredLength = assetFileDescriptor.getDeclaredLength();
-//
-//        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-//
-//    }
 }
