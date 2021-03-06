@@ -1,6 +1,7 @@
 package com.example.miniproject21.FragmentSet1;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -55,6 +56,7 @@ public class UploadPageFragment extends Fragment {
     TextView textViewResult;
     String[] CLASSES;
     boolean predicted = false;
+    @SuppressLint("StaticFieldLeak")
     static ProgressBar progressBar;
 
 
@@ -258,6 +260,10 @@ public class UploadPageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // makePredictions();
+                Intent intent = new Intent(getContext(), ResultsActivity.class);
+                intent.putExtra("item", "Hello");
+
+                startActivity(intent);
             }
         });
 
