@@ -58,15 +58,16 @@ public class UploadPageFragment extends Fragment {
     TextView textViewResult;
     String[] CLASSES;
     boolean predicted = false;
+    static ProgressBar progressBar;
 
 
     public void makePredictions() {
         if (bitmap != null) {
-
+            progressBar.setVisibility(View.VISIBLE);
             try {
                 Predictor predictor = new Predictor();
 
-                int index = predictor.doInBackground(bitmap);
+                int index = predictor.execute(bitmap).get();
 
                 predicted = true;
                 textViewResult.setText(CLASSES[index]);
@@ -125,6 +126,13 @@ public class UploadPageFragment extends Fragment {
             }
 
             return maxIndex;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -206,6 +214,8 @@ public class UploadPageFragment extends Fragment {
 
         CLASSES = new String[] { "burger", "butter_naan", "chai", "chapati", "chole_bhature", "dal_makhani", "dhokla", "fried_rice", "idli", "jalebi", "kaathi_rolls", "kadai_paneer", "kulfi", "masala_dosa", "momos", "paani_puri", "pakode", "pav_bhaji", "pizza", "samosa" };
         textViewResult = view.findViewById(R.id.textViewResult);
+        progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         try {
             interpreter = new Interpreter(loadModel());
