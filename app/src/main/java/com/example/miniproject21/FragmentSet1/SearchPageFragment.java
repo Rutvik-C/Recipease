@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.miniproject21.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SearchPageFragment extends Fragment {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
