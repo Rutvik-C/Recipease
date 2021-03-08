@@ -3,6 +3,7 @@ package com.example.miniproject21;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,13 +15,19 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EditProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -39,7 +46,6 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
 
     String strVeg,strSpice;
 
-    private FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
@@ -87,6 +93,7 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
         finish();
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         switch(adapterView.getId()){
@@ -98,7 +105,7 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
                     adapterList.notifyDataSetChanged();
                     Toast.makeText(this, "Added Allergen",  Toast.LENGTH_SHORT).show();
                 }
-                else if(allergens[i]=="None" && list.size()!=0){
+                else if(allergens[i].equals("None") && list.size()!=0){
                     Toast.makeText(this, "Allergens already present so cannot add none",  Toast.LENGTH_SHORT).show();
                     //none is selected
                 }
@@ -123,29 +130,42 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
             default:
                 break;
         }
-        //Toast.makeText(getApplicationContext(),allergens[i], Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
-    public void saveChanges(View view){
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("users");
-        firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        databaseReference.child(user.getUid()).child("Spice").setValue(strSpice);
-        databaseReference.child(user.getUid()).child("Veg").setValue(strVeg);
-        if(list.size()!=0 && !list.get(0).equals("None")){
-            for(int i=0;i<list.size();i++){
-                databaseReference.child(user.getUid()).child("allergens").child(String.valueOf(i+1)).setValue(list.get(i));
-            }
+    public void saveChanges(View view) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> mMap = new HashMap<>();
+        mMap.put("spice", strSpice);
+        mMap.put("veg", strVeg);
+        if (list.size() != 0 && !list.get(0).equals("None")) {
+            mMap.put("allergens", list);
         }
-        Intent intent = new Intent(EditProfile.this, HomePage.class);
-        startActivity(intent);
-        finish();
+
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert mUser != null;
+        db.collection("Users").document(mUser.getUid()).set(mMap, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Intent intent = new Intent(EditProfile.this, HomePage.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    assert task.getException() != null;
+                    Toast.makeText(EditProfile.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
     }
+
     public void goBack(View view){
         //go to history page
     }

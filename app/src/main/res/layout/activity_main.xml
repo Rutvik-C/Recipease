@@ -129,7 +129,7 @@
         android:layout_marginBottom="30dp"
         android:gravity="center"
         android:onClick="toggleOption"
-        android:text="SIGN UP HERE"
+        android:text="New user? Signup here"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
         android:textStyle="bold"

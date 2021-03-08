@@ -31,11 +31,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnKeyListener {
@@ -129,31 +132,45 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         String passwordAgain = editTextPasswordSignupAgain.getText().toString();
 
         Log.i("SIGN IN", email + " " + password + " " + passwordAgain );
-        // allergen is the auto complete text view
-        // allergen list view is the list view to display the allergens
-        // Just copy paste your logic of adding items in list view
         if (email.equals("") || password.equals("") || passwordAgain.equals("")) {
             Toast.makeText(this, "Please enter all details", Toast.LENGTH_SHORT).show();
 
         } else if (!password.equals(passwordAgain)) {
             Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
-        }
-        else{
+
+        } else{
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
+
                             if (task.isSuccessful()) {
-                                firebaseDatabase = FirebaseDatabase.getInstance();
-                                databaseReference = firebaseDatabase.getReference("users");
+
+                                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                Map<String, Object> mMap = new HashMap<>();
+                                mMap.put("email", email);
+                                mMap.put("history", new ArrayList<String>());
+
                                 assert user != null;
-                                databaseReference.child(user.getUid()).child("email").setValue(email);
+                                db.collection("Users").document(user.getUid()).set(mMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Intent intent = new Intent(MainActivity.this, EditProfile.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }
+                                });
+
+                                //firebaseDatabase = FirebaseDatabase.getInstance();
+                                //databaseReference = firebaseDatabase.getReference("users");
+                                // assert user != null;
+                                //databaseReference.child(user.getUid()).child("email").setValue(email);
                                 // Sign in success, update UI with the signed-in user's information
                                 //Log.d(TAG, "createUserWithEmail:success");
-                                Intent intent = new Intent(MainActivity.this, EditProfile.class);
-                                startActivity(intent);
-                                finish();
 
                             } else {
                                 // If sign in fails, display a message to the user.
