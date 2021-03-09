@@ -29,6 +29,10 @@ import android.widget.Toast;
 import com.example.miniproject21.HomePage;
 import com.example.miniproject21.R;
 import com.example.miniproject21.ResultsActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -260,10 +264,7 @@ public class UploadPageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // makePredictions();
-                Intent intent = new Intent(getContext(), ResultsActivity.class);
-                intent.putExtra("item", "Hello");
-
-                startActivity(intent);
+                predicted = true;
             }
         });
 
@@ -276,6 +277,13 @@ public class UploadPageFragment extends Fragment {
 
                     startActivity(intent);
 
+                    // Adding to user history
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                    assert mUser != null;
+                    db.collection("Users").document(mUser.getUid()).update("history", FieldValue.arrayUnion(textViewResult.getText()));
+
                 }
             }
         });
@@ -285,6 +293,7 @@ public class UploadPageFragment extends Fragment {
     }
 
     private MappedByteBuffer loadModel() throws IOException {
+        assert getContext() != null;
         AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifierIndian20.tflite");
         FileInputStream fileInputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
         FileChannel fileChannel = fileInputStream.getChannel();
