@@ -20,6 +20,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.miniproject21.EditProfile;
+import com.example.miniproject21.HomePage;
+import com.example.miniproject21.MainActivity;
 import com.example.miniproject21.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,7 +65,22 @@ public class HistoryPageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EditProfile.class);
+
                 startActivity(intent);
+            }
+        });
+
+        Button logoutButton = requireActivity().findViewById(R.id.buttonLogout);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                startActivity(intent);
+
+                assert getActivity() != null;
+                getActivity().finish();
             }
         });
 

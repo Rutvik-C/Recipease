@@ -1,6 +1,7 @@
 package com.example.miniproject21;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -21,13 +22,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class EditProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -46,13 +52,43 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
 
     String strVeg,strSpice;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        assert mUser != null;
+        DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
+        mDocumentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error == null) {
+                    if (value != null && value.exists()) {
+                        Log.i("DATA EP", value.getData().toString());
+
+                        if (value.get("spice") != null && value.get("veg") != null && value.get("allergens") != null) {
+                            String spice = value.get("spice").toString();
+                            String veg = value.get("veg").toString();
+                            ArrayList<String> mArrayList = (ArrayList<String>) value.get("allergens");
+
+                            // PREF FETCHED HERE
+                        }
+
+                    } else {
+                        Log.i("RES EP", "Data is NULL");
+
+                    }
+
+                } else {
+                    Log.i("ERR EP", error.toString());
+
+                }
+            }
+        });
 
         spinnerAllergens = (Spinner) findViewById(R.id.spinnerAllergens);
         ArrayAdapter<String> adapterAllergens = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allergens );
