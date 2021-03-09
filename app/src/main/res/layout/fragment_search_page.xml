@@ -1,14 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SearchPageFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Search Page" />
+        android:layout_height="match_parent">
 
+        <androidx.cardview.widget.CardView
+
+            android:id="@+id/cardView1"
+            android:layout_width="410dp"
+            android:layout_height="78dp"
+            android:layout_marginTop="100dp"
+            card_view:cardBackgroundColor="@color/design_default_color_secondary_variant"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="123dp"
+                android:layout_height="73dp"
+                android:layout_gravity="right|center"
+                android:layout_margin="10dp"
+                android:src="@drawable/rose" />
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="241dp"
+                android:layout_height="42dp"
+                android:layout_gravity="left"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center|left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="410dp"
+            android:layout_height="78dp"
+            android:layout_marginTop="26dp"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:cardBackgroundColor="@color/design_default_color_secondary_variant"
+            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/cardView1">
+        <ImageView
+            android:id="@+id/img2"
+            android:layout_width="123dp"
+            android:layout_height="73dp"
+            android:layout_gravity="right|center"
+            android:layout_margin="10dp"
+            android:src="@drawable/rose" />
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="241dp"
+                android:layout_height="42dp"
+                android:layout_gravity="left"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center|left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3"
+            android:layout_width="410dp"
+            android:layout_height="78dp"
+            android:layout_marginTop="26dp"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:cardBackgroundColor="@color/design_default_color_secondary_variant"
+            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/cardView2">
+            <ImageView
+                android:id="@+id/img3"
+                android:layout_width="123dp"
+                android:layout_height="73dp"
+                android:layout_gravity="right|center"
+                android:layout_margin="10dp"
+                android:src="@drawable/rose" />
+
+            <TextView
+                android:id="@+id/text3"
+                android:layout_width="241dp"
+                android:layout_height="42dp"
+                android:layout_gravity="left"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center|left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView4"
+            android:layout_width="410dp"
+            android:layout_height="78dp"
+            android:layout_marginTop="26dp"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:cardBackgroundColor="@color/design_default_color_secondary_variant"
+            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/cardView3">
+            <ImageView
+                android:id="@+id/img4"
+                android:layout_width="123dp"
+                android:layout_height="73dp"
+                android:layout_gravity="right|center"
+                android:layout_margin="10dp"
+                android:src="@drawable/rose" />
+
+            <TextView
+                android:id="@+id/text4"
+                android:layout_width="241dp"
+                android:layout_height="42dp"
+                android:layout_gravity="left"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center|left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView5"
+            android:layout_width="410dp"
+            android:layout_height="78dp"
+            android:layout_marginTop="26dp"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:cardBackgroundColor="@color/design_default_color_secondary_variant"
+            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/cardView4">
+            <ImageView
+                android:id="@+id/img5"
+                android:layout_width="123dp"
+                android:layout_height="73dp"
+                android:layout_gravity="right|center"
+                android:layout_margin="10dp"
+                android:src="@drawable/rose" />
+
+            <TextView
+                android:id="@+id/text5"
+                android:layout_width="241dp"
+                android:layout_height="42dp"
+                android:layout_gravity="left"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center|left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView6"
+            android:layout_width="410dp"
+            android:layout_height="78dp"
+            android:layout_marginTop="26dp"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:cardBackgroundColor="@color/design_default_color_secondary_variant"
+            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/cardView5">
+            <ImageView
+                android:id="@+id/img6"
+                android:layout_width="123dp"
+                android:layout_height="73dp"
+                android:layout_gravity="right|center"
+                android:layout_margin="10dp"
+                android:src="@drawable/rose" />
+
+            <TextView
+                android:id="@+id/text6"
+                android:layout_width="241dp"
+                android:layout_height="42dp"
+                android:layout_gravity="left"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center|left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
