@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.tensorflow.lite.Interpreter;
 
 import java.io.FileInputStream;
@@ -36,7 +39,7 @@ public class HomePage extends AppCompatActivity {
 
         MainFragmentAdapter adapter = new MainFragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(2);
 
         contextOfApplication = getApplicationContext();
     }

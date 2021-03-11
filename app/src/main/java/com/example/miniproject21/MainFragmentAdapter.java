@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.miniproject21.FragmentSet1.HistoryPageFragment;
 import com.example.miniproject21.FragmentSet1.SearchPageFragment;
 import com.example.miniproject21.FragmentSet1.UploadPageFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainFragmentAdapter extends FragmentPagerAdapter {
 
