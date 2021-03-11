@@ -29,8 +29,12 @@ import android.widget.Toast;
 import com.example.miniproject21.HomePage;
 import com.example.miniproject21.R;
 import com.example.miniproject21.ResultsActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -40,11 +44,16 @@ import org.tensorflow.lite.Interpreter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UploadPageFragment extends Fragment {
 
@@ -53,12 +62,14 @@ public class UploadPageFragment extends Fragment {
     private static final int SELECT_FILE = 8;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
 
-    static final int LEN_CLASSES = 20;
     static Interpreter interpreter;
     Bitmap bitmap;
     ImageView imageView;
     TextView textViewResult;
-    String[] CLASSES;
+
+    static int LEN_CLASSES;
+    ArrayList<String> CLASSES;
+
     boolean predicted = false;
     @SuppressLint("StaticFieldLeak")
     static ProgressBar progressBar;
@@ -73,7 +84,7 @@ public class UploadPageFragment extends Fragment {
                 int index = predictor.execute(bitmap).get();
 
                 predicted = true;
-                textViewResult.setText(CLASSES[index]);
+                textViewResult.setText(CLASSES.get(index));
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -210,12 +221,44 @@ public class UploadPageFragment extends Fragment {
         }
     }
 
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upload_page, container, false);
-        Log.i("Check","check");
-        CLASSES = new String[] { "burger", "butter_naan", "chai", "chapati", "chole_bhature", "dal_makhani", "dhokla", "fried_rice", "idli", "jalebi", "kaathi_rolls", "kadai_paneer", "kulfi", "masala_dosa", "momos", "paani_puri", "pakode", "pav_bhaji", "pizza", "samosa" };
+
+        // CLASSES = new String[] { "Aloo Paratha", "Bhel", "Biryani", "Burger", "Butter Naan", "Tea", "Chapati", "Chicken Wings", "Chole Bhature", "Club Sandwich", "Cup Cakes", "Dal Makhani", "Dhokla", "French Fries", "Fried Rice", "Gajar Halwa", "Garlic Bread", "Grilled Sandwich", "Gulab Jamun", "Hot Dog", "Idli", "Jalebi", "Kaathi Rolls", "Kadai Paneer", "Kulfi", "Masala Dosa", "Momos", "Noodles", "Omelette", "Paani Puri", "Pakode", "Pav Bhaji", "Pizza", "Poha", "Samosa", "Soup", "Spring Roll", "Strawberry Cake", "Vada Pav", "Waffles" };
+
+        //ArrayList<String> mArrayList = new ArrayList<String>(Arrays.asList("Aloo Paratha", "Bhel", "Biryani", "Burger", "Butter Naan", "Tea", "Chapati", "Chicken Wings", "Chole Bhature", "Club Sandwich", "Cup Cakes", "Dal Makhani", "Dhokla", "French Fries", "Fried Rice", "Gajar Halwa", "Garlic Bread", "Grilled Sandwich", "Gulab Jamun", "Hot Dog", "Idli", "Jalebi", "Kaathi Rolls", "Kadai Paneer", "Kulfi", "Masala Dosa", "Momos", "Noodles", "Omelette", "Paani Puri", "Pakode", "Pav Bhaji", "Pizza", "Poha", "Samosa", "Soup", "Spring Roll", "Strawberry Cake", "Vada Pav", "Waffles"));
+
+        //Map<String, Object> mMap = new HashMap<>();
+        //mMap.put("itemList", mArrayList);
+
+        //db.collection("foodItems").document("#PredictableItems").set(mMap);
+        //Log.i("DONE", "DONE");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference mDocumentReference = db.collection("foodItems").document("#PredictableItems");
+        mDocumentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot mDocumentSnapshot = task.getResult();
+                    if (mDocumentSnapshot != null && mDocumentSnapshot.exists()) {
+                        CLASSES = (ArrayList<String>) mDocumentSnapshot.get("itemList");
+
+                        assert CLASSES != null;
+                        LEN_CLASSES = CLASSES.size();
+
+                        Log.i("CLASSES", LEN_CLASSES + " --> " + CLASSES);
+                    }
+
+                } else {
+                    Log.i("ERR", "" + task.getException());
+                }
+            }
+        });
+
         textViewResult = view.findViewById(R.id.textViewResult);
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
@@ -263,8 +306,8 @@ public class UploadPageFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // makePredictions();
-                predicted = true;
+                makePredictions();
+                // predicted = true;
             }
         });
 
@@ -287,14 +330,13 @@ public class UploadPageFragment extends Fragment {
                 }
             }
         });
-//
-//
+
         return view;
     }
-    //
+
     private MappedByteBuffer loadModel() throws IOException {
         assert getContext() != null;
-        AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifierIndian20.tflite");
+        AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifier40_81.tflite");
         FileInputStream fileInputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
         FileChannel fileChannel = fileInputStream.getChannel();
         long startOffset = assetFileDescriptor.getStartOffset();
