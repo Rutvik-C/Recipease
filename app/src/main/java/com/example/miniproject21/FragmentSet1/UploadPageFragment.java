@@ -214,7 +214,7 @@ public class UploadPageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upload_page, container, false);
-
+        Log.i("Check","check");
         CLASSES = new String[] { "burger", "butter_naan", "chai", "chapati", "chole_bhature", "dal_makhani", "dhokla", "fried_rice", "idli", "jalebi", "kaathi_rolls", "kadai_paneer", "kulfi", "masala_dosa", "momos", "paani_puri", "pakode", "pav_bhaji", "pizza", "samosa" };
         textViewResult = view.findViewById(R.id.textViewResult);
         progressBar = view.findViewById(R.id.progressBar);
@@ -289,9 +289,9 @@ public class UploadPageFragment extends Fragment {
         });
 //
 //
-        return null;
+        return view;
     }
-//
+    //
     private MappedByteBuffer loadModel() throws IOException {
         assert getContext() != null;
         AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifierIndian20.tflite");

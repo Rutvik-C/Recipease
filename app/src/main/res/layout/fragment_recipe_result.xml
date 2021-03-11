@@ -14,7 +14,7 @@
         tools:context=".RecipeFragment">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/idRVCourse"
+            android:id="@+id/idRecipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

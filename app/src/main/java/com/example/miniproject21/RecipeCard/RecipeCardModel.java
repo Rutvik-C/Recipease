@@ -16,39 +16,39 @@ import java.util.ArrayList;
 
 public class RecipeCardModel {
 
-        private String course_name;
-        private int course_rating;
-        private int course_image;
+        private String stepno;
+        private String stepDetail;
+        //private int course_image;
 
         // Constructor
-        public RecipeCardModel(String course_name, int course_rating, int course_image) {
-            this.course_name = course_name;
-            this.course_rating = course_rating;
-            this.course_image = course_image;
+        public RecipeCardModel(String stepno, String stepDetail) {
+            this.stepno = stepno;
+            this.stepDetail = stepDetail;
+            //this.course_image = course_image;
         }
 
         // Getter and Setter
         public String getCourse_name() {
-            return course_name;
+            return stepno;
         }
 
-        public void setCourse_name(String course_name) {
-            this.course_name = course_name;
+        public void setCourse_name(String stepno) {
+            this.stepno = stepno;
         }
 
-        public int getCourse_rating() {
-            return course_rating;
+        public String getCourse_rating() {
+            return stepDetail;
         }
 
-        public void setCourse_rating(int course_rating) {
-            this.course_rating = course_rating;
+        public void setCourse_rating(String stepDetail) {
+            this.stepDetail = stepDetail;
         }
 
-        public int getCourse_image() {
+       /*ublic int getCourse_image() {
             return course_image;
         }
 
         public void setCourse_image(int course_image) {
             this.course_image = course_image;
-        }
+        }*/
     }

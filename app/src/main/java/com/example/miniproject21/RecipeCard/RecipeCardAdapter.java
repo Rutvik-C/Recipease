@@ -38,7 +38,7 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Vi
         RecipeCardModel model = courseModelArrayList.get(position);
         holder.courseNameTV.setText(model.getCourse_name());
         holder.courseRatingTV.setText("" + model.getCourse_rating());
-        holder.courseIV.setImageResource(model.getCourse_image());
+        //holder.courseIV.setImageResource(model.getCourse_image());
     }
 
     @Override
@@ -57,8 +57,8 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Vi
         public Viewholder(@NonNull View itemView) {
             super(itemView);
             courseIV = itemView.findViewById(R.id.idIVCourseImage);
-            courseNameTV = itemView.findViewById(R.id.idTVCourseName);
-            courseRatingTV = itemView.findViewById(R.id.idTVCourseRating);
+            courseNameTV = itemView.findViewById(R.id.idStepName);
+            courseRatingTV = itemView.findViewById(R.id.idStepDetail);
         }
     }
 }

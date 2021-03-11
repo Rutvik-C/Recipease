@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class RecipeFragment extends Fragment {
 
-    public static RecyclerView courseRV;
-    public ArrayList<RecipeCardModel> courseModelArrayList;
+    public static RecyclerView recipeRecyclerView;
+    public ArrayList<RecipeCardModel> recipeArrayList;
 
 
     @Override
@@ -47,26 +47,26 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        courseRV = getActivity().findViewById(R.id.idRVCourse);
+        recipeRecyclerView = getActivity().findViewById(R.id.idRecipe);
         // here we have created new array list and added data to it.
-        courseModelArrayList = new ArrayList<>();
-        courseModelArrayList.add(new RecipeCardModel("DSA in Java", 4, R.drawable.logo));
-        courseModelArrayList.add(new RecipeCardModel("Java Course", 3, R.drawable.logo));
-        courseModelArrayList.add(new RecipeCardModel("C++ Course", 4, R.drawable.logo));
-        courseModelArrayList.add(new RecipeCardModel("DSA in C++", 4, R.drawable.logo));
-        courseModelArrayList.add(new RecipeCardModel("Kotlin for Android", 4, R.drawable.logo));
-        courseModelArrayList.add(new RecipeCardModel("Java for Android", 4, R.drawable.logo));
-        courseModelArrayList.add(new RecipeCardModel("HTML and CSS", 4, R.drawable.logo));
+        recipeArrayList = new ArrayList<>();
+        recipeArrayList.add(new RecipeCardModel("DSA in Java", "4"));
+        recipeArrayList.add(new RecipeCardModel("Java Course", "1"));
+        recipeArrayList.add(new RecipeCardModel("C++ Course", "4"));
+        recipeArrayList.add(new RecipeCardModel("DSA in C++", "1"));
+        recipeArrayList.add(new RecipeCardModel("Kotlin for Android", "!"));
+        recipeArrayList.add(new RecipeCardModel("Java for Android", "Abc"));
+        recipeArrayList.add(new RecipeCardModel("HTML and CSS", "abc"));
 
         // we are initializing our adapter class and passing our arraylist to it.
-        RecipeCardAdapter courseAdapter = new RecipeCardAdapter(requireContext(), courseModelArrayList);
+        RecipeCardAdapter recipeAdapter = new RecipeCardAdapter(requireContext(), recipeArrayList);
 
         // below line is for setting a layout manager for our recycler view.
         // here we are creating vertical list so we will provide orientation as vertical
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
 
         // in below two lines we are setting layoutmanager and adapter to our recycler view.
-        courseRV.setLayoutManager(linearLayoutManager);
-        courseRV.setAdapter(courseAdapter);
+        recipeRecyclerView.setLayoutManager(linearLayoutManager);
+        recipeRecyclerView.setAdapter(recipeAdapter);
     }
 }
