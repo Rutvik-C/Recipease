@@ -28,19 +28,19 @@ public class RecipeCardModel {
         }
 
         // Getter and Setter
-        public String getCourse_name() {
+        public String getStepno() {
             return stepno;
         }
 
-        public void setCourse_name(String stepno) {
+        public void setStepno(String stepno) {
             this.stepno = stepno;
         }
 
-        public String getCourse_rating() {
+        public String getStepDetail() {
             return stepDetail;
         }
 
-        public void setCourse_rating(String stepDetail) {
+        public void setStepDetail(String stepDetail) {
             this.stepDetail = stepDetail;
         }
 
