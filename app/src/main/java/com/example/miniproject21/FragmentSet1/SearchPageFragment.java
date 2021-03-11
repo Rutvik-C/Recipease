@@ -1,11 +1,15 @@
 package com.example.miniproject21.FragmentSet1;
 
+import android.app.Activity;
 import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,7 +25,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.miniproject21.MainActivity;
 import com.example.miniproject21.R;
+import com.example.miniproject21.RecipeCard.RecipeCardAdapter;
+import com.example.miniproject21.RecipeCard.RecipeCardModel;
+import com.example.miniproject21.ResultsActivity;
+import com.example.miniproject21.TopTenCard.TopTenCardAdapter;
+import com.example.miniproject21.TopTenCard.TopTenModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,6 +60,9 @@ import static android.R.layout.simple_list_item_1;
 public class SearchPageFragment extends Fragment {
     //FirebaseAuth firebaseAuth;
     //FirebaseUser user = firebaseAuth.getCurrentUser();
+    public static RecyclerView toptenRecyclerView;
+    public ArrayList<TopTenModel> toptenArrayList;
+
 
     ArrayList<String> keys;
     HashMap<String, Integer> foodAndCount = new HashMap<String, Integer>();
@@ -60,7 +73,7 @@ public class SearchPageFragment extends Fragment {
 
     ArrayAdapter<String> arrayAdapter1;
 
-    TextView text1;
+    /*TextView text1;
     TextView text2;
     TextView text3;
     TextView text4;
@@ -91,17 +104,19 @@ public class SearchPageFragment extends Fragment {
     ImageView imageView7;
     ImageView imageView8;
     ImageView imageView9;
-    ImageView imageView10;
+    ImageView imageView10;*/
 
     TextView text;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_search_page, container, false);
         autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView);
 
-        text1 = (TextView) view.findViewById(R.id.text1);
+        toptenRecyclerView = getActivity().findViewById(R.id.idtopten);
+        // here we have created new array list and added data to it.
+        toptenArrayList = new ArrayList<>();
+        /*text1 = (TextView) view.findViewById(R.id.text1);
         text2 = (TextView) view.findViewById(R.id.text2);
         text3 = (TextView) view.findViewById(R.id.text3);
         text4 = (TextView) view.findViewById(R.id.text4);
@@ -132,51 +147,69 @@ public class SearchPageFragment extends Fragment {
         imageView7 = (ImageView) view.findViewById(R.id.img7);
         imageView8 = (ImageView) view.findViewById(R.id.img8);
         imageView9 = (ImageView) view.findViewById(R.id.img9);
-        imageView10 = (ImageView) view.findViewById(R.id.img10);
+        imageView10 = (ImageView) view.findViewById(R.id.img10);*/
 
         text = (TextView) view.findViewById(R.id.textSearch);
 
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        toptenRecyclerView = getActivity().findViewById(R.id.idtopten);
+        toptenArrayList = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String[] s = new String[10];
 
         db.collection("foodItems")
-        .get()
-        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document:task.getResult()){
-                        foodAndCount.put(document.getId(),Integer.parseInt(document.getData().get("count").toString()));
-                    }
-                    foodAndCount1 = sortByValue(foodAndCount);
-                    keys = new ArrayList<String>(foodAndCount1.keySet());
-                    for(int i=keys.size()-1;i>=keys.size()-10;i--){
-                        s[keys.size()-i-1]=keys.get(i);
-                    }
-                    Collections.sort(keys);
-                } else {
-                    Log.i("error", "Error getting documents.", task.getException());
-                }
-                text1.setText("    "+s[0]);
-                text2.setText("    "+s[1]);
-                text3.setText("    "+s[2]);
-                text4.setText("    "+s[3]);
-                text5.setText("    "+s[4]);
-                text6.setText("    "+s[5]);
-                text7.setText("    "+s[6]);
-                text8.setText("    "+s[7]);
-                text9.setText("    "+s[8]);
-                text10.setText("    "+s[9]);
-                foodArray = new String[keys.size()];
-                foodArray = keys.toArray(foodArray);
-                arrayAdapter1 = new ArrayAdapter<String>(view.getContext(),simple_list_item_1,foodArray);
-                autoCompleteTextView.setAdapter(arrayAdapter1);
-                autoCompleteTextView.setThreshold(1);
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document:task.getResult()){
+                                if(document.getData().get("count")!=null)
+                                foodAndCount.put(document.getId(),Integer.parseInt(document.getData().get("count").toString()));
+                            }
+                            foodAndCount1 = sortByValue(foodAndCount);
+                            keys = new ArrayList<String>(foodAndCount1.keySet());
+                            //for(int i=keys.size()-1;i>=keys.size()-10;i--){
+                            // toptenArrayList.add(new TopTenModel(keys.get(i), foodAndCount1,R.drawable.rose));
+                            //s[keys.size()-i-1]=keys.get(i);
+                            //}
+                            int i=1;
+                            for (Map.Entry<String, Integer> set : foodAndCount1.entrySet()) {
+                                toptenArrayList.add(new TopTenModel(set.getKey(), String.valueOf(set.getValue()),R.drawable.rose));
+                                i++;
+                                if(i>10)
+                                    break;
+                            }
+                            // we are initializing our adapter class and passing our arraylist to it.
+                            TopTenCardAdapter toptenAdapter = new TopTenCardAdapter(requireContext(), toptenArrayList);
+
+                            // below line is for setting a layout manager for our recycler view.
+                            // here we are creating vertical list so we will provide orientation as vertical
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+
+                            // in below two lines we are setting layoutmanager and adapter to our recycler view.
+                            toptenRecyclerView.setLayoutManager(linearLayoutManager);
+                            toptenRecyclerView.setAdapter(toptenAdapter);
+                            Collections.sort(keys);
+                        } else {
+                            Log.i("error", "Error getting documents.", task.getException());
+                        }
+                        foodArray = new String[keys.size()];
+                        foodArray = keys.toArray(foodArray);
+                        arrayAdapter1 = new ArrayAdapter<String>(view.getContext(),simple_list_item_1,foodArray);
+                        autoCompleteTextView.setAdapter(arrayAdapter1);
+                        autoCompleteTextView.setThreshold(1);
 
 
-            }
-        });
+                    }
+                });
         autoCompleteTextView.setOnTouchListener(autoOnTouch);
         //autoCompleteTextView.setOnKeyListener(autoOnKey);
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -188,8 +221,9 @@ public class SearchPageFragment extends Fragment {
             }
         });
 
-        // Inflate the layout for this fragment
-        return view;
+
+
+
     }
 
     private View.OnTouchListener autoOnTouch = new View.OnTouchListener() {
@@ -217,8 +251,8 @@ public class SearchPageFragment extends Fragment {
 
     public void hideCardAndText(){
         text.setVisibility(View.INVISIBLE);
-
-        text1.setVisibility(View.INVISIBLE);
+        toptenRecyclerView.setVisibility(View.INVISIBLE);
+        /*text1.setVisibility(View.INVISIBLE);
         text2.setVisibility(View.INVISIBLE);
         text3.setVisibility(View.INVISIBLE);
         text4.setVisibility(View.INVISIBLE);
@@ -249,7 +283,7 @@ public class SearchPageFragment extends Fragment {
         imageView7.setVisibility(View.INVISIBLE);
         imageView8.setVisibility(View.INVISIBLE);
         imageView9.setVisibility(View.INVISIBLE);
-        imageView10.setVisibility(View.INVISIBLE);
+        imageView10.setVisibility(View.INVISIBLE);*/
     }
     public static HashMap<String, Integer> sortByValue(HashMap<String, Integer> hm)
     {
