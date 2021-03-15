@@ -17,39 +17,34 @@
         android:layout_height="wrap_content">
 
         <!--ImageVIew to display our Course Image-->
-        <ImageView
-            android:id="@+id/dishImagetopten"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
-            android:contentDescription="@string/app_name"
-            android:padding="5dp"
-            android:src="@drawable/logo" />
 
         <!--Text View to display Course Name-->
-        <TextView
-            android:id="@+id/nutrientName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@id/dishImagetopten"
-            android:text="course name"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
 
         <!--Text VIew to display COurse Rating-->
         <!--Image used in present in drawable folder-->
         <TextView
+            android:id="@+id/nutrientName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="Nutrient Name"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/nutrientValue"
-            android:layout_width="match_parent"
+
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/nutrientName"
+            android:layout_margin="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:layout_toEndOf="@id/dishImagetopten"
             android:drawablePadding="2dp"
-            android:text="course rate" />
+            android:text="Nurient Value" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

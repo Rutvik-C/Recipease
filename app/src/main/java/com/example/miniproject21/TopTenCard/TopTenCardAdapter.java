@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.miniproject21.R;
-import com.example.miniproject21.RecipeCard.RecipeCardAdapter;
-import com.example.miniproject21.RecipeCard.RecipeCardModel;
 
 import java.util.ArrayList;
 public class TopTenCardAdapter extends RecyclerView.Adapter<TopTenCardAdapter.Viewholder> {
@@ -58,8 +56,8 @@ public class TopTenCardAdapter extends RecyclerView.Adapter<TopTenCardAdapter.Vi
         public Viewholder(@NonNull View itemView) {
             super(itemView);
             dishImage= itemView.findViewById(R.id.dishImagetopten);
-            dishName = itemView.findViewById(R.id.dishNametopten);
-            dishCount = itemView.findViewById(R.id.dishCounttopten);
+            dishName = itemView.findViewById(R.id.nutrientName);
+            dishCount = itemView.findViewById(R.id.nutrientValue);
         }
     }
 }

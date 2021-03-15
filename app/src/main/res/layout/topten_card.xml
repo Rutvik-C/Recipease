@@ -28,7 +28,7 @@
 
         <!--Text View to display Course Name-->
         <TextView
-            android:id="@+id/dishNametopten"
+            android:id="@+id/nutrientName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -42,10 +42,10 @@
         <!--Text VIew to display COurse Rating-->
         <!--Image used in present in drawable folder-->
         <TextView
-            android:id="@+id/dishCounttopten"
+            android:id="@+id/nutrientValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dishNametopten"
+            android:layout_below="@id/nutrientName"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:layout_toEndOf="@id/dishImagetopten"
