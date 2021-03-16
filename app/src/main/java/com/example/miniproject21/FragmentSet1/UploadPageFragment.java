@@ -314,20 +314,26 @@ public class UploadPageFragment extends Fragment {
         textViewResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (predicted) {
-                    Intent intent = new Intent(getContext(), ResultsActivity.class);
-                    intent.putExtra("item", textViewResult.getText());
 
-                    startActivity(intent);
+                Intent intent = new Intent(getContext(), ResultsActivity.class);
+                intent.putExtra("item", textViewResult.getText());
 
-                    // Adding to user history
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+                startActivity(intent);
 
-                    assert mUser != null;
-                    db.collection("Users").document(mUser.getUid()).update("history", FieldValue.arrayUnion(textViewResult.getText()));
-
-                }
+//                if (predicted) {
+//                    Intent intent = new Intent(getContext(), ResultsActivity.class);
+//                    intent.putExtra("item", textViewResult.getText());
+//
+//                    startActivity(intent);
+//
+//                    // Adding to user history
+//                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                    FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+//
+//                    assert mUser != null;
+//                    db.collection("Users").document(mUser.getUid()).update("history", FieldValue.arrayUnion(textViewResult.getText()));
+//
+//                }
             }
         });
 
