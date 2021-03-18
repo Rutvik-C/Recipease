@@ -9,8 +9,8 @@
 
     <ListView
         android:id="@+id/listViewAllergens"
-        android:layout_width="289dp"
-        android:layout_height="59dp"
+        android:layout_width="284dp"
+        android:layout_height="108dp"
         android:layout_marginTop="22dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -19,27 +19,41 @@
 
     <Button
         android:id="@+id/saveChanges"
-        android:layout_width="139dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="52dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/custom_button"
         android:onClick="saveChanges"
         android:text="Save Changes?"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/goBack"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerSpice" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/goBack"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="111dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/custom_button"
         android:onClick="goBack"
         android:text="Go Back?"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saveChanges" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
         android:id="@+id/spinnerAllergens"
@@ -47,6 +61,7 @@
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="27dp"
+        android:popupBackground="@drawable/bg_gradient_alt"
         app:layout_constraintBottom_toTopOf="@+id/listViewAllergens"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -59,11 +74,11 @@
         android:layout_height="30dp"
         android:layout_marginTop="57dp"
         android:layout_marginBottom="10dp"
-        android:text="Enter allergens if any"
+        android:text="Choose allergens (if any)"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/spinnerAllergens"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -84,6 +99,7 @@
         android:layout_width="289dp"
         android:layout_height="30dp"
         android:layout_marginTop="20dp"
+        android:popupBackground="@drawable/bg_gradient_alt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,6 +122,7 @@
         android:layout_width="289dp"
         android:layout_height="30dp"
         android:layout_marginTop="20dp"
+        android:popupBackground="@drawable/bg_gradient_alt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

@@ -23,30 +23,36 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/idtopten"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:clipToPadding="false" />
 
         </RelativeLayout>
 
 
         <TextView
             android:id="@+id/textSearch"
-            android:layout_width="365dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="110dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:gravity="bottom"
-            android:text="Top 10 Food Dishes"
+            android:text="Recommendations"
             android:textColor="#000000"
             android:textSize="30sp"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintHorizontal_bias="0.496"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            card_view:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView" />
 
         <AutoCompleteTextView
             android:id="@+id/autoCompleteTextView"
             android:layout_width="360dp"
             android:layout_height="54dp"
             android:layout_marginTop="37dp"
+            android:backgroundTint="@color/white"
             android:hint="Search"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.5"
