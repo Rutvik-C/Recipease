@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="General" android:icon="@drawable/ic_baseline_camera_alt_24" android:id="@+id/generalOption" />
-    <item android:title="Recipe" android:icon="@drawable/ic_baseline_camera_alt_24" android:id="@+id/recipeOption" />
-    <item android:title="Nutrition" android:icon="@drawable/ic_baseline_camera_alt_24" android:id="@+id/nutritionOption" />
-    <item android:title="Video" android:icon="@drawable/ic_baseline_camera_alt_24" android:id="@+id/videoOption" />
+    <item android:title="Home" android:icon="@drawable/ic_home" android:id="@+id/generalOption" />
+    <item android:title="Recipe" android:icon="@drawable/ic_chef" android:id="@+id/recipeOption" />
+    <item android:title="Nutrition" android:icon="@drawable/ic_nutrient" android:id="@+id/nutritionOption" />
+    <item android:title="Video" android:icon="@drawable/ic_youtube" android:id="@+id/videoOption" />
 
 </menu>
