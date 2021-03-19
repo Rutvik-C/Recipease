@@ -6,11 +6,15 @@
     android:background="@drawable/background_gradient">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is video fragment"
+        android:layout_marginTop="16dp"
+        android:textColor="#FFFFFF"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:text="Video"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
