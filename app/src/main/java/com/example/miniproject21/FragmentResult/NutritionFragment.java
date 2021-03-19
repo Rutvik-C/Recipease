@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.miniproject21.NutrientCard.NutrientCardAdapter;
+import com.example.miniproject21.NutrientCard.NutrientCardModel;
 import com.example.miniproject21.R;
 import com.example.miniproject21.RecipeCard.RecipeCardAdapter;
 import com.example.miniproject21.RecipeCard.RecipeCardModel;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 
 public class NutritionFragment extends Fragment {
     public static RecyclerView nutrientRecyclerView;
-    public ArrayList<RecipeCardModel> nutrientArrayList;
+    public ArrayList<NutrientCardModel> nutrientArrayList;
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -45,16 +47,16 @@ public class NutritionFragment extends Fragment {
         nutrientRecyclerView = getActivity().findViewById(R.id.idNutrient);
         // here we have created new array list and added data to it.
         nutrientArrayList = new ArrayList<>();
-        nutrientArrayList.add(new RecipeCardModel("DSA in Java", "4"));
-        nutrientArrayList.add(new RecipeCardModel("Java Course", "1"));
-        nutrientArrayList.add(new RecipeCardModel("C++ Course", "4"));
-        nutrientArrayList.add(new RecipeCardModel("DSA in C++", "1"));
-        nutrientArrayList.add(new RecipeCardModel("Kotlin for Android", "!"));
-        nutrientArrayList.add(new RecipeCardModel("Java for Android", "Abc"));
-        nutrientArrayList.add(new RecipeCardModel("HTML and CSS", "abc"));
+        nutrientArrayList.add(new NutrientCardModel("DSA in Java", "4"));
+        nutrientArrayList.add(new NutrientCardModel("Java Course", "1"));
+        nutrientArrayList.add(new NutrientCardModel("C++ Course", "4"));
+        nutrientArrayList.add(new NutrientCardModel("DSA in C++", "1"));
+        nutrientArrayList.add(new NutrientCardModel("Kotlin for Android", "abcdefghijk"));
+        nutrientArrayList.add(new NutrientCardModel("Java for Android", "Abc"));
+        nutrientArrayList.add(new NutrientCardModel("HTML and CSS", "abc"));
 
         // we are initializing our adapter class and passing our arraylist to it.
-        RecipeCardAdapter recipeAdapter = new RecipeCardAdapter(requireContext(), nutrientArrayList);
+        NutrientCardAdapter nutrientAdapter = new NutrientCardAdapter(requireContext(), nutrientArrayList);
 
         // below line is for setting a layout manager for our recycler view.
         // here we are creating vertical list so we will provide orientation as vertical
@@ -62,6 +64,6 @@ public class NutritionFragment extends Fragment {
 
         // in below two lines we are setting layoutmanager and adapter to our recycler view.
         nutrientRecyclerView.setLayoutManager(linearLayoutManager);
-        nutrientRecyclerView.setAdapter(recipeAdapter);
+        nutrientRecyclerView.setAdapter(nutrientAdapter);
     }
 }

@@ -57,8 +57,8 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Vi
         public Viewholder(@NonNull View itemView) {
             super(itemView);
             courseIV = itemView.findViewById(R.id.dishImagetopten);
-            stepName = itemView.findViewById(R.id.nutrientName);
-            stepDetail = itemView.findViewById(R.id.nutrientValue);
+            stepName = itemView.findViewById(R.id.stepName);
+            stepDetail = itemView.findViewById(R.id.stepDetail);
         }
     }
 }

@@ -22,7 +22,7 @@ public class NutrientCardAdapter extends RecyclerView.Adapter<NutrientCardAdapte
     private ArrayList<NutrientCardModel> nutrientArrayList;
 
     // Constructor
-    public NutrientCardAdapter(Context context, ArrayList<NutrientCardAdapter> nutrientArrayListArrayList) {
+    public NutrientCardAdapter(Context context, ArrayList<NutrientCardModel> nutrientArrayList) {
         this.context = context;
         this.nutrientArrayList = nutrientArrayList;
     }

@@ -27,7 +27,7 @@ public class TopTenCardAdapter extends RecyclerView.Adapter<TopTenCardAdapter.Vi
     @Override
     public TopTenCardAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // to inflate the layout for each item of recycler view.
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.topten_card, parent, false);
         return new Viewholder(view);
     }
 
@@ -56,8 +56,8 @@ public class TopTenCardAdapter extends RecyclerView.Adapter<TopTenCardAdapter.Vi
         public Viewholder(@NonNull View itemView) {
             super(itemView);
             dishImage= itemView.findViewById(R.id.dishImagetopten);
-            dishName = itemView.findViewById(R.id.nutrientName);
-            dishCount = itemView.findViewById(R.id.nutrientValue);
+            dishName = itemView.findViewById(R.id.dishNameTopTen);
+            dishCount = itemView.findViewById(R.id.dishCountTopTen);
         }
     }
 }
