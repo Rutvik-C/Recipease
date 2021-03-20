@@ -8,8 +8,8 @@
     android:layout_margin="5dp"
     app:cardBackgroundColor="#FF0A1D59"
     app:cardCornerRadius="8dp"
-    app:cardElevation="8dp"
-    app:cardMaxElevation="10dp"
+    app:cardElevation="1dp"
+    app:cardMaxElevation="1dp"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true">
 
