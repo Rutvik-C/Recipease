@@ -188,6 +188,8 @@ public class UploadPageFragment extends Fragment {
             }
 
             imageView.setImageBitmap(bitmap);
+            // BITMAP READY
+            makePredictions();
 
         }
 
@@ -215,6 +217,8 @@ public class UploadPageFragment extends Fragment {
 
                 imageView.setImageBitmap(bitmap);
                 Log.i("IMG CROPPER TRY", "Image set");
+                // BITMAP READY
+                makePredictions();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -225,18 +229,9 @@ public class UploadPageFragment extends Fragment {
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upload_page, container, false);
 
         // CLASSES = new String[] { "Aloo Paratha", "Bhel", "Biryani", "Burger", "Butter Naan", "Tea", "Chapati", "Chicken Wings", "Chole Bhature", "Club Sandwich", "Cup Cakes", "Dal Makhani", "Dhokla", "French Fries", "Fried Rice", "Gajar Halwa", "Garlic Bread", "Grilled Sandwich", "Gulab Jamun", "Hot Dog", "Idli", "Jalebi", "Kaathi Rolls", "Kadai Paneer", "Kulfi", "Masala Dosa", "Momos", "Noodles", "Omelette", "Paani Puri", "Pakode", "Pav Bhaji", "Pizza", "Poha", "Samosa", "Soup", "Spring Roll", "Strawberry Cake", "Vada Pav", "Waffles" };
-
-        //ArrayList<String> mArrayList = new ArrayList<String>(Arrays.asList("Aloo Paratha", "Bhel", "Biryani", "Burger", "Butter Naan", "Tea", "Chapati", "Chicken Wings", "Chole Bhature", "Club Sandwich", "Cup Cakes", "Dal Makhani", "Dhokla", "French Fries", "Fried Rice", "Gajar Halwa", "Garlic Bread", "Grilled Sandwich", "Gulab Jamun", "Hot Dog", "Idli", "Jalebi", "Kaathi Rolls", "Kadai Paneer", "Kulfi", "Masala Dosa", "Momos", "Noodles", "Omelette", "Paani Puri", "Pakode", "Pav Bhaji", "Pizza", "Poha", "Samosa", "Soup", "Spring Roll", "Strawberry Cake", "Vada Pav", "Waffles"));
-
-        //Map<String, Object> mMap = new HashMap<>();
-        //mMap.put("itemList", mArrayList);
-
-        //db.collection("foodItems").document("#PredictableItems").set(mMap);
-        //Log.i("DONE", "DONE");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference mDocumentReference = db.collection("foodItems").document("#PredictableItems");
