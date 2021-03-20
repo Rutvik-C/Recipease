@@ -65,7 +65,7 @@ public class UploadPageFragment extends Fragment {
     static Interpreter interpreter;
     Bitmap bitmap;
     ImageView imageView;
-    TextView textViewResult;
+    Button getInformationButton, gotoResultButton;
 
     static int LEN_CLASSES;
     ArrayList<String> CLASSES;
@@ -85,7 +85,10 @@ public class UploadPageFragment extends Fragment {
                 int index = predictor.execute(bitmap).get();
 
                 predicted = true;
-                textViewResult.setText(CLASSES.get(index));
+
+                gotoResultButton.setText(CLASSES.get(index));
+                gotoResultButton.setVisibility(View.VISIBLE);
+                getInformationButton.setVisibility(View.INVISIBLE);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -189,7 +192,6 @@ public class UploadPageFragment extends Fragment {
 
             imageView.setImageBitmap(bitmap);
             // BITMAP READY
-            makePredictions();
 
         }
 
@@ -218,7 +220,6 @@ public class UploadPageFragment extends Fragment {
                 imageView.setImageBitmap(bitmap);
                 Log.i("IMG CROPPER TRY", "Image set");
                 // BITMAP READY
-                makePredictions();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -255,7 +256,8 @@ public class UploadPageFragment extends Fragment {
             }
         });
 
-        textViewResult = view.findViewById(R.id.textViewResult);
+        getInformationButton = view.findViewById(R.id.buttonDetect);
+        gotoResultButton = view.findViewById(R.id.gotoResultButton);
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
@@ -273,6 +275,9 @@ public class UploadPageFragment extends Fragment {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getInformationButton.setVisibility(View.VISIBLE);
+                gotoResultButton.setVisibility(View.INVISIBLE);
+
                 if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
 
@@ -287,6 +292,9 @@ public class UploadPageFragment extends Fragment {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getInformationButton.setVisibility(View.VISIBLE);
+                gotoResultButton.setVisibility(View.INVISIBLE);
+
                 if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_REQUEST);
 
@@ -298,21 +306,20 @@ public class UploadPageFragment extends Fragment {
             }
         });
 
-        Button button = view.findViewById(R.id.buttonDetect);
-        button.setOnClickListener(new View.OnClickListener() {
+        getInformationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 makePredictions();
-                // predicted = true;
+
             }
         });
 
-        textViewResult.setOnClickListener(new View.OnClickListener() {
+        gotoResultButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(getContext(), ResultsActivity.class);
-                intent.putExtra("item", textViewResult.getText());
+                intent.putExtra("item", gotoResultButton.getText());
 
                 startActivity(intent);
 
