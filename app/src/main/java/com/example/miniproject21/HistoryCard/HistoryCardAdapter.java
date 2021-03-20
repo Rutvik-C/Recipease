@@ -1,4 +1,5 @@
-package com.example.miniproject21.TopTenCard;
+package com.example.miniproject21.HistoryCard;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,31 +11,34 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.miniproject21.R;
+import com.example.miniproject21.TopTenCard.TopTenCardAdapter;
+import com.example.miniproject21.TopTenCard.TopTenModel;
 
 import java.util.ArrayList;
-public class TopTenCardAdapter extends RecyclerView.Adapter<TopTenCardAdapter.Viewholder> {
+
+public class HistoryCardAdapter extends RecyclerView.Adapter<HistoryCardAdapter.Viewholder> {
 
     private Context context;
-    private ArrayList<TopTenModel> toptenArrayList;
+    private ArrayList<HistoryModel> historyArrayList;
 
     // Constructor
-    public TopTenCardAdapter(Context context, ArrayList<TopTenModel> toptenArrayList) {
+    public HistoryCardAdapter(Context context, ArrayList<HistoryModel> historyArrayList) {
         this.context = context;
-        this.toptenArrayList = toptenArrayList;
+        this.historyArrayList = historyArrayList;
     }
 
     @NonNull
     @Override
-    public TopTenCardAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HistoryCardAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // to inflate the layout for each item of recycler view.
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.topten_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_card, parent, false);
         return new Viewholder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TopTenCardAdapter.Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull HistoryCardAdapter.Viewholder holder, int position) {
         // to set data to textview and imageview of each card layout
-        TopTenModel model = toptenArrayList.get(position);
+        HistoryModel model = historyArrayList.get(position);
         holder.dishName.setText(model.getDishname());
         holder.dishCount.setText("" + model.getDishcount());
         holder.dishImage.setImageResource(model.getDishimage());
@@ -44,7 +48,7 @@ public class TopTenCardAdapter extends RecyclerView.Adapter<TopTenCardAdapter.Vi
     public int getItemCount() {
         // this method is used for showing number
         // of card items in recycler view.
-        return toptenArrayList.size();
+        return historyArrayList.size();
     }
 
     // View holder class for initializing of
@@ -55,9 +59,9 @@ public class TopTenCardAdapter extends RecyclerView.Adapter<TopTenCardAdapter.Vi
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
-            dishImage= itemView.findViewById(R.id.dishImagetopten);
-            dishName = itemView.findViewById(R.id.dishNameTopTen);
-            dishCount = itemView.findViewById(R.id.dishCountTopTen);
+            dishImage= itemView.findViewById(R.id.dishImageHistory);
+            dishName = itemView.findViewById(R.id.dishNameHistory);
+            dishCount = itemView.findViewById(R.id.dishCountHistory);
         }
     }
 }
