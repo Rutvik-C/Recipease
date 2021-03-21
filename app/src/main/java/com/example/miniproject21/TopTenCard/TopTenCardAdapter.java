@@ -55,9 +55,9 @@ public class TopTenCardAdapter extends RecyclerView.Adapter<TopTenCardAdapter.Vi
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
-            dishImage= itemView.findViewById(R.id.dishImagetopten);
-            dishName = itemView.findViewById(R.id.dishNameTopTen);
-            dishCount = itemView.findViewById(R.id.dishCountTopTen);
+            dishImage= itemView.findViewById(R.id.dishImageView);
+            dishName = itemView.findViewById(R.id.dishNameTextView);
+            dishCount = itemView.findViewById(R.id.dishCountTextView);
         }
     }
 }

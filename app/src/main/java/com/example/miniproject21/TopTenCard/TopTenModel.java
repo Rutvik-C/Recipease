@@ -2,40 +2,40 @@ package com.example.miniproject21.TopTenCard;
 
 public class TopTenModel {
 
-    private String dishname;
-    private String dishcount;
-    private int dishimage;
+    private String dishName;
+    private String dishCount;
+    private int dishImage;
 
     // Constructor
     public TopTenModel(String dishname, String dishcount,int dishimage) {
-        this.dishname = dishname;
-        this.dishcount = dishcount;
-        this.dishimage = dishimage;
+        this.dishName = dishname;
+        this.dishCount = dishcount;
+        this.dishImage = dishimage;
     }
 
     // Getter and Setter
     public String getDishname() {
-        return dishname;
+        return dishName;
     }
 
     public void setDishname(String dishname) {
-        this.dishname = dishname;
+        this.dishName = dishname;
     }
 
     public String getDishcount() {
-        return dishcount;
+        return dishCount;
     }
 
     public void setDishcount(String dishcount) {
-        this.dishcount = dishcount;
+        this.dishCount = dishcount;
     }
 
        public int getDishimage() {
-            return dishimage;
+            return dishImage;
         }
 
         public void setCourse_image(int dishimage) {
-            this.dishimage = dishimage;
+            this.dishImage = dishimage;
         }
 
 

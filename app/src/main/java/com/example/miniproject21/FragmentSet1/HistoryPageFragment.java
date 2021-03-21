@@ -16,11 +16,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.miniproject21.CustomCardAdapter;
 import com.example.miniproject21.EditProfile;
 import com.example.miniproject21.HistoryCard.HistoryCardAdapter;
 import com.example.miniproject21.HistoryCard.HistoryModel;
@@ -29,6 +31,8 @@ import com.example.miniproject21.MainActivity;
 import com.example.miniproject21.R;
 import com.example.miniproject21.RecipeCard.RecipeCardAdapter;
 import com.example.miniproject21.RecipeCard.RecipeCardModel;
+import com.example.miniproject21.ResultsActivity;
+import com.example.miniproject21.TopTenCard.TopTenModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -45,11 +49,10 @@ import java.util.Objects;
 
 
 public class HistoryPageFragment extends Fragment {
-    public static RecyclerView historyRecyclerView;
-    public ArrayList<HistoryModel> historyArrayList;
-    ListView mListview;
-    ArrayAdapter<String> mArrayAdapter;
-    ArrayList<String> mArrayList;
+    ArrayList<TopTenModel> historyArrayList;
+    ArrayList<String> historyNameArrayList;
+    ListView historyListView;
+    CustomCardAdapter mCustomCardAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,21 +64,11 @@ public class HistoryPageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        historyRecyclerView = getActivity().findViewById(R.id.idhistory);
+        historyListView = view.findViewById(R.id.historyArrayList);
         historyArrayList = new ArrayList<>();
-        historyArrayList.add(new HistoryModel("Idli", "4",R.drawable.rose));
-        historyArrayList.add(new HistoryModel("Dosa", "4",R.drawable.rose));
-        historyArrayList.add(new HistoryModel("Maggi", "4",R.drawable.rose));
-        HistoryCardAdapter recipeAdapter = new HistoryCardAdapter(requireContext(), historyArrayList);
-
-        // below line is for setting a layout manager for our recycler view.
-        // here we are creating vertical list so we will provide orientation as vertical
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
-
-        // in below two lines we are setting layoutmanager and adapter to our recycler view.
-        historyRecyclerView.setLayoutManager(linearLayoutManager);
-        historyRecyclerView.setAdapter(recipeAdapter);
-
+        historyNameArrayList = new ArrayList<>();
+        mCustomCardAdapter = new CustomCardAdapter(getContext(), historyNameArrayList, historyArrayList, 0);
+        historyListView.setAdapter(mCustomCardAdapter);
 
         final Button editProfileButton=requireView().findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -107,29 +100,44 @@ public class HistoryPageFragment extends Fragment {
         assert mUser != null;
         DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
 
-        //mDocumentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-           // @Override
-            //public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-          //      if (error == null) {
-            //        if (value != null && value.exists()) {
-              //          Log.i("DATA", value.getData().toString());
+        mDocumentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error == null) {
+                    if (value != null && value.exists()) {
+                        Log.i("DATA", value.getData().toString());
 
-                        //mArrayList.clear();
-                        //mArrayList.addAll((ArrayList<String>) Objects.requireNonNull(value.get("history")));
-                        //mArrayAdapter.notifyDataSetChanged();
+                        historyNameArrayList.clear();
+                        historyArrayList.clear();
+                        for (String name : (ArrayList<String>) Objects.requireNonNull(value.get("history"))) {
+                            historyNameArrayList.add(name);
+                            historyArrayList.add(new TopTenModel(name, "", R.drawable.rose));
 
-                //    } else {
-                  //      Log.i("RES", "Data is NULL");
+                            mCustomCardAdapter.notifyDataSetChanged();
+                        }
 
-                    //}
+                    } else {
+                        Log.i("RES", "Data is NULL");
 
-               // } else {
-                 //   Log.i("ERR", error.toString());
+                    }
 
-                //}
+                } else {
+                    Log.i("ERR", error.toString());
 
-         //   }
-       // });
+                }
+
+            }
+        });
+
+        historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getContext(), ResultsActivity.class);
+                intent.putExtra("item", historyNameArrayList.get(i));
+
+                startActivity(intent);
+            }
+        });
 
     }
 

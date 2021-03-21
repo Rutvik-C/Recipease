@@ -11,27 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="0dp"
+        <ListView
+            android:id="@+id/topTenListView"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:divider="@color/transparent"
+            android:dividerHeight="5dp"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/textSearch"
-            tools:context=".RecipeFragment">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/idtopten"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp"
-                android:clipToPadding="false" />
-
-        </RelativeLayout>
-
+            card_view:layout_constraintTop_toBottomOf="@+id/textSearch" />
 
         <TextView
             android:id="@+id/textSearch"
