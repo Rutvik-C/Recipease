@@ -1,6 +1,7 @@
 package com.example.miniproject21.FragmentResult;
 
 import android.os.Bundle;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,19 +23,20 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 public class VideoFragment extends Fragment {
     private YouTubePlayer YPlayer;
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (isVisibleToUser) {
-            ResultsActivity.getMenu().getItem(3).setChecked(true);
-        }
-    }
-
+    private static View view;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video_result, container, false);
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.fragment_video_result, container, false);
+        } catch (InflateException e) {
+            /* map is already there, just return view as it is */
+        }
         return view;
     }
 
@@ -55,4 +57,5 @@ public class VideoFragment extends Fragment {
         YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment)getActivity().getFragmentManager().findFragmentById(R.id.youtube_fragment);
         youTubePlayerFragment.initialize(PlayerConfig.API_KEY, onInitializedListener);
     }
+
 }
