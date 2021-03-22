@@ -174,18 +174,16 @@ public class SearchPageFragment extends Fragment {
 
         public boolean onTouch(View v, MotionEvent event) {
             if(autoCompleteTextView.getText().toString().length()==0){
+                text.setVisibility(View.VISIBLE);
                 topTenListView.setVisibility(View.VISIBLE);
             }
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                hideCardAndText();
+                text.setVisibility(View.INVISIBLE);
+                topTenListView.setVisibility(View.INVISIBLE);
             }
             return false;
         }
     };
 
-    public void hideCardAndText() {
-        text.setVisibility(View.INVISIBLE);
-        topTenListView.setVisibility(View.INVISIBLE);
-    }
 
 }
