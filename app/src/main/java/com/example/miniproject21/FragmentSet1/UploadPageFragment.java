@@ -235,14 +235,14 @@ public class UploadPageFragment extends Fragment {
         // CLASSES = new String[] { "Aloo Paratha", "Bhel", "Biryani", "Burger", "Butter Naan", "Tea", "Chapati", "Chicken Wings", "Chole Bhature", "Club Sandwich", "Cup Cakes", "Dal Makhani", "Dhokla", "French Fries", "Fried Rice", "Gajar Halwa", "Garlic Bread", "Grilled Sandwich", "Gulab Jamun", "Hot Dog", "Idli", "Jalebi", "Kaathi Rolls", "Kadai Paneer", "Kulfi", "Masala Dosa", "Momos", "Noodles", "Omelette", "Paani Puri", "Pakode", "Pav Bhaji", "Pizza", "Poha", "Samosa", "Soup", "Spring Roll", "Strawberry Cake", "Vada Pav", "Waffles" };
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference mDocumentReference = db.collection("foodItems").document("#PredictableItems");
+        DocumentReference mDocumentReference = db.collection("predictableItems").document("#PredItem");
         mDocumentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot mDocumentSnapshot = task.getResult();
                     if (mDocumentSnapshot != null && mDocumentSnapshot.exists()) {
-                        CLASSES = (ArrayList<String>) mDocumentSnapshot.get("itemList");
+                        CLASSES = (ArrayList<String>) mDocumentSnapshot.get("items");
 
                         assert CLASSES != null;
                         LEN_CLASSES = CLASSES.size();
