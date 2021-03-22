@@ -70,9 +70,6 @@ public class SearchPageFragment extends Fragment {
     ListView topTenListView;
     CustomCardAdapter mCustomCardAdapter;
 
-
-    //AutoCompleteTextView autoCompleteTextView;
-
     TextView text;
 
     @Override
@@ -124,17 +121,6 @@ public class SearchPageFragment extends Fragment {
                 // LOGIC TO ADD IN HISTORY
             }
         });
-
-//        autoCompleteTextView.setOnTouchListener(autoOnTouch);
-//        //autoCompleteTextView.setOnKeyListener(autoOnKey);
-//        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//                Log.i("selected", arg0.getItemAtPosition(arg2).toString());
-//                Toast.makeText(view.getContext(), arg0.getItemAtPosition(arg2).toString() + " details will be displayed ", Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
 
 
     }
