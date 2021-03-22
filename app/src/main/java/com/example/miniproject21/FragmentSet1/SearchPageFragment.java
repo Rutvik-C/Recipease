@@ -70,12 +70,20 @@ public class SearchPageFragment extends Fragment {
     ListView topTenListView;
     CustomCardAdapter mCustomCardAdapter;
 
+    ArrayList<String> keys;
+    HashMap<String, Integer> foodAndCount = new HashMap<String, Integer>();
+    Map<String, Integer> foodAndCount1;
+    String[] foodArray;
+
+    AutoCompleteTextView autoCompleteTextView;
+
     TextView text;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_search_page, container, false);
 
+        autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView);
         text = (TextView) view.findViewById(R.id.textSearch);
 
         // Inflate the layout for this fragment
@@ -109,6 +117,8 @@ public class SearchPageFragment extends Fragment {
                 }
             }
         });
+
+        autoCompleteTextView.setOnTouchListener(autoOnTouch);
 
         topTenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
