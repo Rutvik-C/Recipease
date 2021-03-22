@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -70,14 +72,15 @@ public class SearchPageFragment extends Fragment {
     ListView topTenListView;
     CustomCardAdapter mCustomCardAdapter;
 
-    ArrayList<String> keys;
-    HashMap<String, Integer> foodAndCount = new HashMap<String, Integer>();
-    Map<String, Integer> foodAndCount1;
+    ArrayList<String> keys = new ArrayList<String>();
     String[] foodArray;
+    ArrayAdapter arrayAdapter;
 
     AutoCompleteTextView autoCompleteTextView;
 
     TextView text;
+
+    FrameLayout frameLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,6 +88,7 @@ public class SearchPageFragment extends Fragment {
 
         autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView);
         text = (TextView) view.findViewById(R.id.textSearch);
+        frameLayout = (FrameLayout) view.findViewById(R.id.frame);
 
         // Inflate the layout for this fragment
         return view;
@@ -101,6 +105,27 @@ public class SearchPageFragment extends Fragment {
         topTenListView.setAdapter(mCustomCardAdapter);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("foodItems")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                keys.add(document.getId());
+                            }
+                        } else {
+                            Log.i("error", "Error getting documents.", task.getException());
+                        }
+                        foodArray = new String[keys.size()];
+                        foodArray = keys.toArray(foodArray);
+                        arrayAdapter = new ArrayAdapter<String>(view.getContext(), simple_list_item_1, foodArray);
+                        autoCompleteTextView.setAdapter(arrayAdapter);
+                        autoCompleteTextView.setThreshold(1);
+                    }
+                });
+
         CollectionReference mCollectionReference = db.collection("foodItems");
         mCollectionReference.orderBy("search_count", Query.Direction.DESCENDING).limit(10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -118,7 +143,17 @@ public class SearchPageFragment extends Fragment {
             }
         });
 
+        frameLayout.setOnTouchListener(autoOnTouch);
+
         autoCompleteTextView.setOnTouchListener(autoOnTouch);
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                Log.i("selected",arg0.getItemAtPosition(arg2).toString());
+                Toast.makeText(view.getContext(), arg0.getItemAtPosition(arg2).toString()+" details will be displayed ",  Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
         topTenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -138,7 +173,9 @@ public class SearchPageFragment extends Fragment {
     private View.OnTouchListener autoOnTouch = new View.OnTouchListener() {
 
         public boolean onTouch(View v, MotionEvent event) {
-
+            if(autoCompleteTextView.getText().toString().length()==0){
+                topTenListView.setVisibility(View.VISIBLE);
+            }
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 hideCardAndText();
             }
@@ -148,6 +185,7 @@ public class SearchPageFragment extends Fragment {
 
     public void hideCardAndText() {
         text.setVisibility(View.INVISIBLE);
-        //toptenRecyclerView.setVisibility(View.INVISIBLE);
+        topTenListView.setVisibility(View.INVISIBLE);
     }
+
 }
