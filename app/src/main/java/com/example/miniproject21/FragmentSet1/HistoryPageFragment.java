@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
@@ -119,8 +120,14 @@ public class HistoryPageFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getContext(), ResultsActivity.class);
                 intent.putExtra("item", historyNameArrayList.get(i));
-
                 startActivity(intent);
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                // Increasing search count
+                db.collection("foodItems").document(historyNameArrayList.get(i)).update("search_count", FieldValue.increment(1));
+
             }
         });
 
