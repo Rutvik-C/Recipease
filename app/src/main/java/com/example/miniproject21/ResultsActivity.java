@@ -20,6 +20,7 @@ public class ResultsActivity extends AppCompatActivity {
     static ViewPager viewPager;
     static BottomNavigationView bottomNavigationView;
     static Menu menu;
+    public static String item;
 
     public static Menu getMenu() {
         return menu;
@@ -31,7 +32,7 @@ public class ResultsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_results);
 
         Intent intent = getIntent();
-        String item = intent.getStringExtra("item");
+        item = intent.getStringExtra("item");
 
         Log.i("INTENT", item);
 

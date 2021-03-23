@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,8 @@ public class GeneralFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_general_result, container, false);
 
         // code here
+        TextView mTextView = view.findViewById(R.id.dishName);
+        mTextView.setText(ResultsActivity.item);
 
         return view;
     }

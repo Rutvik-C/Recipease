@@ -317,26 +317,23 @@ public class UploadPageFragment extends Fragment {
         gotoResultButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(getContext(), ResultsActivity.class);
                 intent.putExtra("item", gotoResultButton.getText());
-
                 startActivity(intent);
 
-//                if (predicted) {
-//                    Intent intent = new Intent(getContext(), ResultsActivity.class);
-//                    intent.putExtra("item", textViewResult.getText());
-//
-//                    startActivity(intent);
-//
-//                    // Adding to user history
-//                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                    FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//                    assert mUser != null;
-//                    db.collection("Users").document(mUser.getUid()).update("history", FieldValue.arrayUnion(textViewResult.getText()));
-//
-//                }
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                // Check if many and make appropriate alert boxes
+
+                // CURRENTLY COMMENTED TO AVOID DB INCONSISTENCY
+                // Increasing search count
+                // db.collection("foodItems").document(gotoResultButton.getText().toString()).update("search_count", FieldValue.increment(1));
+
+                // Adding to user history
+                // assert mUser != null;
+                // db.collection("Users").document(mUser.getUid()).update("history", FieldValue.arrayUnion(gotoResultButton.getText()));
+
             }
         });
 

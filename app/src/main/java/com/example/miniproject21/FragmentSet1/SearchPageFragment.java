@@ -1,5 +1,6 @@
 package com.example.miniproject21.FragmentSet1;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -26,13 +27,17 @@ import com.example.miniproject21.ResultsActivity;
 import com.example.miniproject21.TopTenCard.TopTenModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.R.layout.simple_list_item_1;
 
@@ -52,6 +57,23 @@ public class SearchPageFragment extends Fragment {
 
     FrameLayout frameLayout;
 
+    public void addToHistoryIncreaseCountAndProceed(String item) {
+        Intent intent = new Intent(getContext(), ResultsActivity.class);
+        intent.putExtra("item", item);
+        startActivity(intent);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        // Increasing search count
+        db.collection("foodItems").document(item).update("search_count", FieldValue.increment(1));
+
+        // Adding to user history
+        assert mUser != null;
+        db.collection("Users").document(mUser.getUid()).update("history", FieldValue.arrayUnion(item));
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_search_page, container, false);
@@ -64,6 +86,7 @@ public class SearchPageFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -71,7 +94,7 @@ public class SearchPageFragment extends Fragment {
         topTenArrayList = new ArrayList<>();
         topNameArrayList = new ArrayList<>();
         topTenListView = view.findViewById(R.id.topTenListView);
-        mCustomCardAdapter = new CustomCardAdapter(getContext(), topNameArrayList, topTenArrayList, 1);
+        mCustomCardAdapter = new CustomCardAdapter(requireContext(), topNameArrayList, topTenArrayList, 1);
         topTenListView.setAdapter(mCustomCardAdapter);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -82,7 +105,7 @@ public class SearchPageFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                                 keys.add(document.getId());
                             }
                         } else {
@@ -104,8 +127,8 @@ public class SearchPageFragment extends Fragment {
                     topTenArrayList.clear();
                     topNameArrayList.clear();
 
-                    for (QueryDocumentSnapshot mDocument : task.getResult()) {
-                        topTenArrayList.add(new TopTenModel(mDocument.getId(), mDocument.get("search_count").toString(), R.drawable.rose));
+                    for (QueryDocumentSnapshot mDocument : Objects.requireNonNull(task.getResult())) {
+                        topTenArrayList.add(new TopTenModel(mDocument.getId(), Objects.requireNonNull(mDocument.get("search_count")).toString(), R.drawable.rose));
                         topNameArrayList.add(mDocument.getId());
                         mCustomCardAdapter.notifyDataSetChanged();
                     }
@@ -119,8 +142,7 @@ public class SearchPageFragment extends Fragment {
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                Log.i("selected",arg0.getItemAtPosition(arg2).toString());
-                Toast.makeText(view.getContext(), arg0.getItemAtPosition(arg2).toString()+" details will be displayed ",  Toast.LENGTH_SHORT).show();
+                addToHistoryIncreaseCountAndProceed(arg0.getItemAtPosition(arg2).toString());
 
             }
         });
@@ -128,20 +150,16 @@ public class SearchPageFragment extends Fragment {
         topTenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getContext(), ResultsActivity.class);
-                intent.putExtra("item", topNameArrayList.get(i));
+                addToHistoryIncreaseCountAndProceed(topNameArrayList.get(i));
 
-                startActivity(intent);
-
-                // LOGIC TO ADD IN HISTORY
             }
         });
 
-
     }
 
-    private View.OnTouchListener autoOnTouch = new View.OnTouchListener() {
+    private final View.OnTouchListener autoOnTouch = new View.OnTouchListener() {
 
+        @SuppressLint("ClickableViewAccessibility")
         public boolean onTouch(View v, MotionEvent event) {
             if(autoCompleteTextView.getText().toString().length()==0){
                 text.setVisibility(View.VISIBLE);

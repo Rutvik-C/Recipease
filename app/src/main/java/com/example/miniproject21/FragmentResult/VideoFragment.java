@@ -24,6 +24,16 @@ import com.google.android.youtube.player.YouTubePlayerView;
 public class VideoFragment extends Fragment {
     private YouTubePlayer YPlayer;
     private static View view;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            ResultsActivity.getMenu().getItem(3).setChecked(true);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
