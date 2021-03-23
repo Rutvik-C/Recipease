@@ -5,7 +5,7 @@
     android:id="@+id/frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_alt"
+    android:background="@drawable/background_gradient"
     tools:context=".HomePage">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +37,7 @@
             android:layout_marginTop="20dp"
             android:gravity="bottom"
             android:text="Recommendations"
-            android:textColor="#000000"
+            android:textColor="#FFFFFF"
             android:textSize="30sp"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.496"
@@ -49,8 +49,13 @@
             android:layout_width="360dp"
             android:layout_height="54dp"
             android:layout_marginTop="37dp"
+            android:background="@drawable/edittext_border"
             android:backgroundTint="@color/white"
             android:hint="Search"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.5"
             card_view:layout_constraintStart_toStartOf="parent"
