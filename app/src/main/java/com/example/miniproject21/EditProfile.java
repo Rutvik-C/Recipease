@@ -40,13 +40,13 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
 
     Spinner spinnerAllergens;
     Spinner spinnerVeg;
-    Spinner spinnerSpice;
+    int spice;
 
     AutoCompleteTextView autoAllergen;
 
     String[] allergens={"None", "Egg","Peanuts","Soy","Wheat","Nuts","Shellfish","Sesame Seeds","Garlic","Maze","Poultry Meat"};
     String[] veg={"None","Jain","Vegetarian", "Non-Vegetarian"};
-    String[] spice={"None","Spicy","Medium", "Sweet"};
+
 
     List<String> list = new ArrayList<String>();
 
@@ -75,8 +75,9 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
                         Log.i("DATA EP", value.getData().toString());
 
                         if (value.get("spice") != null && value.get("veg") != null && value.get("allergens") != null) {
-                            String spice = value.get("spice").toString();
+                            spice = Integer.parseInt(value.get("spice").toString());
                             String veg = value.get("veg").toString();
+                            Log.i("spice", String.valueOf(spice));
                             ArrayList<String> mArrayList = (ArrayList<String>) value.get("allergens");
 
                             // PREF FETCHED HERE
@@ -106,11 +107,6 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
         spinnerVeg.setAdapter(adapterVeg);
         spinnerVeg.setOnItemSelectedListener(this);
 
-        spinnerSpice = (Spinner) findViewById(R.id.spinnerSpice);
-        ArrayAdapter<String> adapterSpice = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spice );
-        adapterSpice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerSpice.setAdapter(adapterSpice);
-        spinnerSpice.setOnItemSelectedListener(this);
 
         adapterList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
         allergenListView = findViewById(R.id.listViewAllergens);
@@ -151,10 +147,6 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
             case R.id.spinnerVeg:
                 Log.i("Hi","2");
                 strVeg=veg[i];
-                break;
-            case R.id.spinnerSpice:
-                Log.i("Hi","3");
-                strSpice=spice[i];
                 break;
             default:
                 break;

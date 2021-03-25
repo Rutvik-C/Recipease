@@ -98,15 +98,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerVeg" />
 
-    <Spinner
-        android:id="@+id/spinnerSpice"
-        android:layout_width="289dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="20dp"
-        android:popupBackground="@drawable/bg_gradient_alt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spice" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
