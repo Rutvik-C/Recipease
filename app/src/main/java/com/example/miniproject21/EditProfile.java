@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -41,6 +42,8 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
     Spinner spinnerVeg;
     Spinner spinnerSpice;
 
+    AutoCompleteTextView autoAllergen;
+
     String[] allergens={"None", "Egg","Peanuts","Soy","Wheat","Nuts","Shellfish","Sesame Seeds","Garlic","Maze","Poultry Meat"};
     String[] veg={"None","Jain","Vegetarian", "Non-Vegetarian"};
     String[] spice={"None","Spicy","Medium", "Sweet"};
@@ -49,6 +52,7 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
 
     ListView allergenListView;
     ArrayAdapter<String> adapterList;
+    ArrayAdapter<String> adapterAllergens;
 
     String strVeg,strSpice;
 
@@ -90,11 +94,10 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
             }
         });
 
-        spinnerAllergens = (Spinner) findViewById(R.id.spinnerAllergens);
-        ArrayAdapter<String> adapterAllergens = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allergens );
-        adapterAllergens.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAllergens.setAdapter(adapterAllergens);
-        spinnerAllergens.setOnItemSelectedListener(this);
+        autoAllergen = findViewById(R.id.autoAllergens);
+        adapterAllergens = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allergens );
+        autoAllergen.setAdapter(adapterAllergens);
+        autoAllergen.setThreshold(1);
 
 
         spinnerVeg = (Spinner) findViewById(R.id.spinnerVeg);
@@ -120,6 +123,18 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
                 adapterList.notifyDataSetChanged();
             }
         });
+        autoAllergen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
+                if(list.contains(arg0.getItemAtPosition(arg2).toString())){
+                    Toast.makeText(EditProfile.this, "Item already present in the list", Toast.LENGTH_SHORT).show();
+                    adapterAllergens.notifyDataSetChanged();
+                }
+                else{
+                    list.add(arg0.getItemAtPosition(arg2).toString());
+                }
+            }
+        });
 
     }
 
@@ -133,28 +148,6 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         switch(adapterView.getId()){
-            case R.id.spinnerAllergens:
-                Log.i("Hi","1");
-                if(list.contains("None")){
-                    list.remove(0);
-                    list.add(allergens[i]);
-                    adapterList.notifyDataSetChanged();
-                    Toast.makeText(this, "Added Allergen",  Toast.LENGTH_SHORT).show();
-                }
-                else if(allergens[i].equals("None") && list.size()!=0){
-                    Toast.makeText(this, "Allergens already present so cannot add none",  Toast.LENGTH_SHORT).show();
-                    //none is selected
-                }
-                else if(list.contains(allergens[i])){
-                    Toast.makeText(this, "Allergen already present!",  Toast.LENGTH_SHORT).show();
-                    //allergen already present
-                }
-                else{
-                    list.add(allergens[i]);
-                    adapterList.notifyDataSetChanged();
-                    Toast.makeText(this, "Added Allergen",  Toast.LENGTH_SHORT).show();
-                }
-                break;
             case R.id.spinnerVeg:
                 Log.i("Hi","2");
                 strVeg=veg[i];

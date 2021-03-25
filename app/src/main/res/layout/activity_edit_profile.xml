@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerAllergens" />
+        app:layout_constraintTop_toBottomOf="@+id/autoAllergens" />
 
     <Button
         android:id="@+id/saveChanges"
@@ -36,10 +36,10 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Spinner
-        android:id="@+id/spinnerAllergens"
+    <AutoCompleteTextView
+        android:id="@+id/autoAllergens"
         android:layout_width="289dp"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="27dp"
         android:popupBackground="@drawable/bg_gradient_alt"
@@ -57,7 +57,7 @@
         android:layout_marginBottom="10dp"
         android:text="Choose allergens (if any)"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/spinnerAllergens"
+        app:layout_constraintBottom_toTopOf="@+id/autoAllergens"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent"
