@@ -3,6 +3,7 @@ package com.example.miniproject21.FragmentSet1;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -13,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -232,7 +234,6 @@ public class UploadPageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upload_page, container, false);
 
-        // CLASSES = new String[] { "Aloo Paratha", "Bhel", "Biryani", "Burger", "Butter Naan", "Tea", "Chapati", "Chicken Wings", "Chole Bhature", "Club Sandwich", "Cup Cakes", "Dal Makhani", "Dhokla", "French Fries", "Fried Rice", "Gajar Halwa", "Garlic Bread", "Grilled Sandwich", "Gulab Jamun", "Hot Dog", "Idli", "Jalebi", "Kaathi Rolls", "Kadai Paneer", "Kulfi", "Masala Dosa", "Momos", "Noodles", "Omelette", "Paani Puri", "Pakode", "Pav Bhaji", "Pizza", "Poha", "Samosa", "Soup", "Spring Roll", "Strawberry Cake", "Vada Pav", "Waffles" };
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference mDocumentReference = db.collection("predictableItems").document("#PredItem");
@@ -308,8 +309,24 @@ public class UploadPageFragment extends Fragment {
 
         getInformationButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                makePredictions();
+            public void onClick(View v) {
+                // makePredictions();
+
+                View mView = LayoutInflater.from(getContext()).inflate(R.layout.choice_alert_box, null);
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+
+                mBuilder.setView(mView);
+
+                AlertDialog mAlertDialog = mBuilder.create();
+                mAlertDialog.show();
+
+                Button button = mView.findViewById(R.id.alertButton1);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.i("NESTED", "Possible!");
+                    }
+                });
 
             }
         });

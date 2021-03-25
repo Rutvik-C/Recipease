@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -34,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,32 +43,61 @@ import java.util.Objects;
 
 public class EditProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    Spinner spinnerAllergens;
     Spinner spinnerVeg;
     int spice;
 
     AutoCompleteTextView autoAllergen;
 
-    String[] allergens={"None", "Egg","Peanuts","Soy","Wheat","Nuts","Shellfish","Sesame Seeds","Garlic","Maze","Poultry Meat"};
-    String[] veg={"None","Jain","Vegetarian", "Non-Vegetarian"};
+    // String[] allergens={"None", "Egg","Peanuts","Soy","Wheat","Nuts","Shellfish","Sesame Seeds","Garlic","Maze","Poultry Meat"};
+    String[] veg={"Any", "Jain", "Vegetarian", "Non-Vegetarian"};
+    ArrayList<String> allergens;
 
-
-    List<String> list = new ArrayList<String>();
+    ArrayList<String> list = new ArrayList<String>();
 
     ListView allergenListView;
-    ArrayAdapter<String> adapterList;
+    EditProfileAdapter mAdapter;
     ArrayAdapter<String> adapterAllergens;
 
     String strVeg,strSpice;
 
+    public void dismissAllergen(View view) {
+        ImageView mImageView = (ImageView) view;
+
+        int index = Integer.parseInt(mImageView.getTag().toString());
+
+        list.remove(index);
+        mAdapter.notifyDataSetChanged();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        Log.i("INIT", "Edit profile");
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        // FETCHING ALLERGENS FROM CLOUD
+        DocumentReference mDocumentReference1 = db.collection("predictableItems").document("#Allergens");
+        mDocumentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot mDocumentSnapshot = task.getResult();
+                    if (mDocumentSnapshot != null && mDocumentSnapshot.exists()) {
+                        allergens = (ArrayList<String>) mDocumentSnapshot.get("items");
+
+                        Log.i("ALLERGENS", allergens + "");
+                    }
+
+                } else {
+                    Log.i("ERR", "" + task.getException());
+                }
+            }
+        });
 
         assert mUser != null;
         DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
@@ -99,7 +130,7 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
         });
 
         autoAllergen = findViewById(R.id.autoAllergens);
-        adapterAllergens = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allergens );
+        adapterAllergens = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allergens);
         autoAllergen.setAdapter(adapterAllergens);
         autoAllergen.setThreshold(1);
 
@@ -110,18 +141,11 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
         spinnerVeg.setAdapter(adapterVeg);
         spinnerVeg.setOnItemSelectedListener(this);
 
+        mAdapter = new EditProfileAdapter(this, list);
 
-        adapterList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
         allergenListView = findViewById(R.id.listViewAllergens);
-        allergenListView.setAdapter(adapterList);
+        allergenListView.setAdapter(mAdapter);
 
-        allergenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { //to delete allergen on clicking
-                list.remove(i);
-                adapterList.notifyDataSetChanged();
-            }
-        });
         autoAllergen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
@@ -131,6 +155,8 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
                 }
                 else{
                     list.add(arg0.getItemAtPosition(arg2).toString());
+                    autoAllergen.setText("");
+                    mAdapter.notifyDataSetChanged();
                 }
             }
         });

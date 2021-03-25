@@ -34,7 +34,7 @@ public class CustomCardAdapter extends ArrayAdapter<String> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater mLayoutInflater =LayoutInflater.from(mContext);
+        LayoutInflater mLayoutInflater = LayoutInflater.from(mContext);
         @SuppressLint("ViewHolder") View view = mLayoutInflater.inflate(R.layout.custom_card, null, true);
 
         TextView mTextView1 = view.findViewById(R.id.dishNameTextView);
