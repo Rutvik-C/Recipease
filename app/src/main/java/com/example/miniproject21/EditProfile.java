@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -150,6 +152,7 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
         switch(adapterView.getId()){
             case R.id.spinnerVeg:
                 Log.i("Hi","2");
+                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
                 strVeg=veg[i];
                 break;
             case R.id.spinnerSpice:
