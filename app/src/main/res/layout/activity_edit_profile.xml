@@ -114,8 +114,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-    <Spinner
-        android:id="@+id/spinnerVeg"
+    <AutoCompleteTextView
+        android:id="@+id/autoVeg"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginStart="32dp"
@@ -141,7 +141,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerVeg" />
+        app:layout_constraintTop_toBottomOf="@+id/autoVeg" />
 
     <TextView
         android:id="@+id/textView2"
