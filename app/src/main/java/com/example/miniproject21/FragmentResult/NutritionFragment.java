@@ -77,12 +77,12 @@ public class NutritionFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        calories+=document.getData().get("nv_calories").toString();
-                        fats+=document.getData().get("nv_fat").toString();
-                        cholesterol+=document.getData().get("nv_cholesterol").toString();
-                        carbohydrates+=document.getData().get("nv_carbohydrates").toString();
-                        sodium+=document.getData().get("nv_sodium").toString();
-                        protein+=document.getData().get("nv_protein").toString();
+                        calories=document.getData().get("nv_calories").toString();
+                        fats=document.getData().get("nv_fat").toString();
+                        cholesterol=document.getData().get("nv_cholesterol").toString();
+                        carbohydrates=document.getData().get("nv_carbohydrates").toString();
+                        sodium=document.getData().get("nv_sodium").toString();
+                        protein=document.getData().get("nv_protein").toString();
                         Log.i("hey",calories);
                         function();
 
@@ -98,12 +98,15 @@ public class NutritionFragment extends Fragment {
     }
     void function(){
         // we are initializing our adapter class and passing our arraylist to it.
-        nutrientArrayList.add(new NutrientCardModel("Calories",calories));
-        nutrientArrayList.add(new NutrientCardModel("Cholesterol",cholesterol));
-        nutrientArrayList.add(new NutrientCardModel("Carbohydrates",carbohydrates));
-        nutrientArrayList.add(new NutrientCardModel("Fats",fats));
-        nutrientArrayList.add(new NutrientCardModel("Sodium",sodium));
-        nutrientArrayList.add(new NutrientCardModel("Proteins",protein));
+        if(nutrientArrayList.size()==0) {
+            nutrientArrayList.add(new NutrientCardModel("Calories",calories));
+            nutrientArrayList.add(new NutrientCardModel("Cholesterol",cholesterol));
+            nutrientArrayList.add(new NutrientCardModel("Carbohydrates",carbohydrates));
+            nutrientArrayList.add(new NutrientCardModel("Fats",fats));
+            nutrientArrayList.add(new NutrientCardModel("Sodium",sodium));
+            nutrientArrayList.add(new NutrientCardModel("Proteins",protein));
+
+        }
         NutrientCardAdapter nutrientAdapter = new NutrientCardAdapter(requireContext(), nutrientArrayList);
 
         // below line is for setting a layout manager for our recycler view.
@@ -113,6 +116,5 @@ public class NutritionFragment extends Fragment {
         // in below two lines we are setting layoutmanager and adapter to our recycler view.
         nutrientRecyclerView.setLayoutManager(linearLayoutManager);
         nutrientRecyclerView.setAdapter(nutrientAdapter);
-
     }
 }
