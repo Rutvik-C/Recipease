@@ -58,7 +58,7 @@ public class EditProfile extends AppCompatActivity  {
     ArrayAdapter<String> adapterAllergens;
     ArrayAdapter<String> adapterVeg;
 
-    String strVeg;
+    int preference = 0;
 
     SeekBar s;
 
@@ -184,12 +184,21 @@ public class EditProfile extends AppCompatActivity  {
 
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
                 autoVeg.setText(arg0.getItemAtPosition(arg2).toString());
+
+                switch (arg0.getItemAtPosition(arg2).toString()) {
+                    case "Jain":
+                        preference = 0;
+                        break;
+                    case "Vegetarian":
+                        preference = 1;
+                        break;
+                    case "Any":
+                    case "Non-Vegetarian":
+                        preference = 2;
+                        break;
+                }
             }
         });
-
-
-
-//        mAdapter = new EditProfileAdapter(this, list);
 
     }
 
@@ -204,6 +213,7 @@ public class EditProfile extends AppCompatActivity  {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> mMap = new HashMap<>();
+        mMap.put("preference", preference);
         mMap.put("spice", spice);
         mMap.put("veg", autoVeg.getText().toString());
         if (mArrayList.size() != 0 ) {
