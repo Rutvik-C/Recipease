@@ -41,34 +41,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class EditProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class EditProfile extends AppCompatActivity  {
 
-    Spinner spinnerVeg;
     int spice;
 
     AutoCompleteTextView autoAllergen;
+    AutoCompleteTextView autoVeg;
 
-    // String[] allergens={"None", "Egg","Peanuts","Soy","Wheat","Nuts","Shellfish","Sesame Seeds","Garlic","Maze","Poultry Meat"};
     String[] veg={"Any", "Jain", "Vegetarian", "Non-Vegetarian"};
     ArrayList<String> allergens;
 
-    ArrayList<String> list = new ArrayList<String>();
+    ArrayList<String> mArrayList = new ArrayList<String>();
 
     ListView allergenListView;
     EditProfileAdapter mAdapter;
     ArrayAdapter<String> adapterAllergens;
+    ArrayAdapter<String> adapterVeg;
 
-    String strVeg,strSpice;
+    String strVeg;
 
-    public void dismissAllergen(View view) {
-        ImageView mImageView = (ImageView) view;
+    SeekBar s;
 
-        int index = Integer.parseInt(mImageView.getTag().toString());
-
-        list.remove(index);
-        mAdapter.notifyDataSetChanged();
-
-    }
+//    public void dismissAllergen(View view) {
+//        ImageView mImageView = (ImageView) view;
+//
+//        int index = Integer.parseInt(mImageView.getTag().toString());
+//
+//        mArrayList.remove(index);
+//        mAdapter.notifyDataSetChanged();
+//
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +91,24 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
                     DocumentSnapshot mDocumentSnapshot = task.getResult();
                     if (mDocumentSnapshot != null && mDocumentSnapshot.exists()) {
                         allergens = (ArrayList<String>) mDocumentSnapshot.get("items");
+                        autoAllergen = findViewById(R.id.autoAllergens);
+                        adapterAllergens = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, allergens);
+                        autoAllergen.setAdapter(adapterAllergens);
+                        autoAllergen.setThreshold(1);
+                        autoAllergen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+                            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
+                                if(mArrayList.contains(arg0.getItemAtPosition(arg2).toString())){
+                                    Toast.makeText(EditProfile.this, "Item already present in the list", Toast.LENGTH_SHORT).show();
+                                    adapterAllergens.notifyDataSetChanged();
+                                }
+                                else{
+                                    mAdapter.add(arg0.getItemAtPosition(arg2).toString());
+                                    autoAllergen.setText("");
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        });
                         Log.i("ALLERGENS", allergens + "");
                     }
 
@@ -108,11 +127,39 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
                     if (value != null && value.exists()) {
                         Log.i("DATA EP", value.getData().toString());
 
-                        if (value.get("spice") != null && value.get("veg") != null && value.get("allergens") != null) {
+                        if (value.get("spice")!=null && value.get("veg") != null && value.get("allergens") != null) {
                             spice = Integer.parseInt(value.get("spice").toString());
                             String veg = value.get("veg").toString();
-                            Log.i("spice", String.valueOf(spice));
-                            ArrayList<String> mArrayList = (ArrayList<String>) value.get("allergens");
+                           // Log.i("spice", String.valueOf(spice));
+                            s = (SeekBar) findViewById(R.id.seekBar);
+                            s.setProgress(spice);
+                            s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                @Override
+                                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                                    spice =i;
+                                }
+
+                                @Override
+                                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                }
+
+                                @Override
+                                public void onStopTrackingTouch(SeekBar seekBar) {
+                                }
+                            });
+                            mArrayList = (ArrayList<String>) value.get("allergens");
+                            autoVeg.setText(value.get("veg").toString());
+                            mAdapter = new EditProfileAdapter(getApplicationContext(), mArrayList);
+                            allergenListView = findViewById(R.id.listViewAllergens);
+                            allergenListView.setAdapter(mAdapter);
+                            allergenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    mArrayList.remove(position);
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            });
 
                             // PREF FETCHED HERE
                         }
@@ -129,54 +176,21 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
             }
         });
 
-        autoAllergen = findViewById(R.id.autoAllergens);
-        adapterAllergens = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allergens);
-        autoAllergen.setAdapter(adapterAllergens);
-        autoAllergen.setThreshold(1);
-
-
-        spinnerVeg = (Spinner) findViewById(R.id.spinnerVeg);
-        ArrayAdapter<String> adapterVeg = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, veg );
-        adapterVeg.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerVeg.setAdapter(adapterVeg);
-        spinnerVeg.setOnItemSelectedListener(this);
-
-        mAdapter = new EditProfileAdapter(this, list);
-
-        allergenListView = findViewById(R.id.listViewAllergens);
-        allergenListView.setAdapter(mAdapter);
-
-        autoAllergen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        autoVeg = findViewById(R.id.autoVeg);
+        adapterVeg = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, veg);
+        autoVeg.setAdapter(adapterVeg);
+        autoVeg.setThreshold(1);
+        autoVeg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
-                if(list.contains(arg0.getItemAtPosition(arg2).toString())){
-                    Toast.makeText(EditProfile.this, "Item already present in the list", Toast.LENGTH_SHORT).show();
-                    adapterAllergens.notifyDataSetChanged();
-                }
-                else{
-                    list.add(arg0.getItemAtPosition(arg2).toString());
-                    autoAllergen.setText("");
-                    mAdapter.notifyDataSetChanged();
-                }
+                autoVeg.setText(arg0.getItemAtPosition(arg2).toString());
             }
         });
-        SeekBar s = (SeekBar) findViewById(R.id.seekBar);
-        s.setProgress(5);
-        s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                spice =i;
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
 
-            }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
+//        mAdapter = new EditProfileAdapter(this, list);
+
     }
 
     @Override
@@ -185,33 +199,18 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
         finish();
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        switch(adapterView.getId()){
-            case R.id.spinnerVeg:
-                Log.i("Hi","2");
-                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
-                strVeg=veg[i];
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
     public void saveChanges(View view) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> mMap = new HashMap<>();
-        mMap.put("spice", strSpice);
-        mMap.put("veg", strVeg);
-        if (list.size() != 0 && !list.get(0).equals("None")) {
-            mMap.put("allergens", list);
+        mMap.put("spice", spice);
+        mMap.put("veg", autoVeg.getText().toString());
+        if (mArrayList.size() != 0 ) {
+            mMap.put("allergens", mArrayList);
+        }
+        else{
+            mMap.put("allergens", new ArrayList<String>());
         }
 
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
