@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 mMap.put("email", email);
                                 mMap.put("history", new ArrayList<String>());
 
+
                                 assert user != null;
                                 db.collection("Users").document(user.getUid()).set(mMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override

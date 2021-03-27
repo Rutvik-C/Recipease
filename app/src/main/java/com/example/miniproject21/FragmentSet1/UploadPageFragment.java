@@ -78,6 +78,7 @@ public class UploadPageFragment extends Fragment {
 
 
     public void makePredictions() {
+
         if (bitmap != null) {
             imageView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);

@@ -50,8 +50,7 @@ public class EditProfile extends AppCompatActivity  {
 
     String[] veg={"Any", "Jain", "Vegetarian", "Non-Vegetarian"};
     ArrayList<String> allergens;
-
-    ArrayList<String> mArrayList = new ArrayList<String>();
+    ArrayList<String> mArrayList;
 
     ListView allergenListView;
     EditProfileAdapter mAdapter;
@@ -62,91 +61,43 @@ public class EditProfile extends AppCompatActivity  {
 
     SeekBar s;
 
-//    public void dismissAllergen(View view) {
-//        ImageView mImageView = (ImageView) view;
-//
-//        int index = Integer.parseInt(mImageView.getTag().toString());
-//
-//        mArrayList.remove(index);
-//        mAdapter.notifyDataSetChanged();
-//
-//    }
+    public void dismissAllergen(View view) {
+        ImageView mImageView = (ImageView) view;
+
+        int index = Integer.parseInt(mImageView.getTag().toString());
+
+        mArrayList.remove(index);
+        mAdapter.notifyDataSetChanged();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-
-        Log.i("INIT", "Edit profile");
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        mAdapter = new EditProfileAdapter(getApplicationContext(), mArrayList);
-        allergenListView = findViewById(R.id.listViewAllergens);
         s = (SeekBar) findViewById(R.id.seekBar);
-
-        // FETCHING ALLERGENS FROM CLOUD
-
-        assert mUser != null;
-        DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
-        mDocumentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error == null) {
-                    if (value != null && value.exists()) {
-                        Log.i("DATA EP", value.getData().toString());
-
-                        if (value.get("spice")!=null && value.get("veg") != null && value.get("allergens") != null) {
-                            spice = Integer.parseInt(value.get("spice").toString());
-                            String veg = value.get("veg").toString();
-                           // Log.i("spice", String.valueOf(spice));
-                            s = (SeekBar) findViewById(R.id.seekBar);
-                            s.setProgress(spice);
-                            s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                                @Override
-                                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                                    spice =i;
-                                }
-
-                                @Override
-                                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                                }
-
-                                @Override
-                                public void onStopTrackingTouch(SeekBar seekBar) {
-                                }
-                            });
-                            ArrayList<String> newArrayList = (ArrayList<String>)value.get("allergens");
-                            for(int i=0;i<newArrayList.size();i++){
-                                mArrayList.add(newArrayList.get(i));
-                            }
-                            mAdapter.notifyDataSetChanged();
-                            allergenListView.setAdapter(mAdapter);
-                            autoVeg.setText(value.get("veg").toString());
-                            allergenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    mArrayList.remove(position);
-                                }
-                            });
-
-                            // PREF FETCHED HERE
-                        }
-
-                    } else {
-                        Log.i("RES EP", "Data is NULL");
-
-                    }
-
-                } else {
-                    Log.i("ERR EP", error.toString());
-
-                }
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                spice = i;
             }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
         });
+
+        mArrayList = new ArrayList<>();
+        mAdapter = new EditProfileAdapter(this, mArrayList);
+        allergenListView = findViewById(R.id.listViewAllergens);
+        allergenListView.setAdapter(mAdapter);
+
 
         autoVeg = findViewById(R.id.autoVeg);
         adapterVeg = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, veg);
@@ -171,7 +122,73 @@ public class EditProfile extends AppCompatActivity  {
                 }
             }
         });
-        function();
+
+
+        allergens = new ArrayList<>();
+        autoAllergen = findViewById(R.id.autoAllergens);
+        adapterAllergens = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, allergens);
+        autoAllergen.setAdapter(adapterAllergens);
+        autoAllergen.setThreshold(1);
+        autoAllergen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (mArrayList.contains(adapterView.getItemAtPosition(i).toString())) {
+                    autoAllergen.setText("");
+                    Toast.makeText(EditProfile.this, "Item already present in the list", Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+                    autoAllergen.setText("");
+                    mArrayList.add(adapterView.getItemAtPosition(i).toString());
+                    mAdapter.notifyDataSetChanged();
+
+                }
+            }
+        });
+
+        DocumentReference allergenDocumentRef = db.collection("predictableItems").document("#Allergens");
+        allergenDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot mDocSnap = task.getResult();
+                    if (mDocSnap.exists()) {
+                        ArrayList<String> arrayList = (ArrayList<String>) mDocSnap.get("items");
+                        allergens.clear();
+                        allergens.addAll(arrayList);
+
+                        adapterAllergens.notifyDataSetChanged();
+
+                    }
+                }
+            }
+        });
+
+
+        // FETCH USER DATA IF EXISTS
+        assert mUser != null;
+        final DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
+        mDocumentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot mDocSnap = task.getResult();
+                    if (mDocSnap.exists()) {
+                        if (mDocSnap.get("spice") != null && mDocSnap.get("veg") != null && mDocSnap.get("allergens") != null) {
+                            spice = Integer.parseInt(mDocSnap.get("spice").toString());
+                            s.setProgress(spice);
+
+                            mArrayList.addAll((ArrayList<String>) mDocSnap.get("allergens"));
+                            mAdapter.notifyDataSetChanged();
+
+                            autoVeg.setText(mDocSnap.get("veg").toString());
+
+                            preference = Integer.parseInt(mDocSnap.get("preference").toString());
+                        }
+                    }
+                }
+            }
+        });
 
     }
 
@@ -189,14 +206,10 @@ public class EditProfile extends AppCompatActivity  {
         mMap.put("preference", preference);
         mMap.put("spice", spice);
         mMap.put("veg", autoVeg.getText().toString());
-        if (mArrayList.size() != 0 ) {
-            mMap.put("allergens", mArrayList);
-        }
-        else{
-            mMap.put("allergens", new ArrayList<String>());
-        }
+        mMap.put("allergens", mArrayList);
 
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
         assert mUser != null;
         db.collection("Users").document(mUser.getUid()).set(mMap, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -211,73 +224,6 @@ public class EditProfile extends AppCompatActivity  {
                 }
             }
         });
-
-
-    }
-
-    public void goBack(View view){
-        //go to history page
-    }
-
-    public void function(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference mDocumentReference1 = db.collection("predictableItems").document("#Allergens");
-        mDocumentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot mDocumentSnapshot = task.getResult();
-                    if (mDocumentSnapshot != null && mDocumentSnapshot.exists()) {
-                        allergens = (ArrayList<String>) mDocumentSnapshot.get("items");
-                        autoAllergen = findViewById(R.id.autoAllergens);
-                        adapterAllergens = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, allergens);
-                        Log.i("yyy", allergens.toString());
-                        autoAllergen.setAdapter(adapterAllergens);
-                        autoAllergen.setThreshold(1);
-                        autoAllergen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
-                                if(mArrayList.contains(arg0.getItemAtPosition(arg2).toString())){
-                                    Toast.makeText(EditProfile.this, "Item already present in the list", Toast.LENGTH_SHORT).show();
-                                    adapterAllergens.notifyDataSetChanged();
-                                }
-                                else{
-                                    mArrayList.add(arg0.getItemAtPosition(arg2).toString());
-                                    autoAllergen.setText("");
-                                    mAdapter.notifyDataSetChanged();
-                                    allergenListView.setAdapter(mAdapter);
-                                }
-                            }
-                        });
-                        s.setProgress(spice);
-                        s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                            @Override
-                            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                                spice =i;
-                            }
-
-                            @Override
-                            public void onStartTrackingTouch(SeekBar seekBar) {
-
-                            }
-
-                            @Override
-                            public void onStopTrackingTouch(SeekBar seekBar) {
-                            }
-                        });
-                        Log.i("ALLERGENS", allergens + "");
-                    }
-
-                } else {
-                    Log.i("ERR", "" + task.getException());
-                }
-            }
-        });
+        
     }
 }
-
-//allergens
-//veg non veg
-//spicy
-//change password
