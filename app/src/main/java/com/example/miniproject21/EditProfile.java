@@ -77,46 +77,17 @@ public class EditProfile extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+
         Log.i("INIT", "Edit profile");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        mAdapter = new EditProfileAdapter(getApplicationContext(), mArrayList);
+        allergenListView = findViewById(R.id.listViewAllergens);
+        s = (SeekBar) findViewById(R.id.seekBar);
+
         // FETCHING ALLERGENS FROM CLOUD
-        DocumentReference mDocumentReference1 = db.collection("predictableItems").document("#Allergens");
-        mDocumentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot mDocumentSnapshot = task.getResult();
-                    if (mDocumentSnapshot != null && mDocumentSnapshot.exists()) {
-                        allergens = (ArrayList<String>) mDocumentSnapshot.get("items");
-                        autoAllergen = findViewById(R.id.autoAllergens);
-                        adapterAllergens = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, allergens);
-                        autoAllergen.setAdapter(adapterAllergens);
-                        autoAllergen.setThreshold(1);
-                        autoAllergen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
-                                if(mArrayList.contains(arg0.getItemAtPosition(arg2).toString())){
-                                    Toast.makeText(EditProfile.this, "Item already present in the list", Toast.LENGTH_SHORT).show();
-                                    adapterAllergens.notifyDataSetChanged();
-                                }
-                                else{
-                                    mAdapter.add(arg0.getItemAtPosition(arg2).toString());
-                                    autoAllergen.setText("");
-                                    mAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        });
-                        Log.i("ALLERGENS", allergens + "");
-                    }
-
-                } else {
-                    Log.i("ERR", "" + task.getException());
-                }
-            }
-        });
 
         assert mUser != null;
         DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
@@ -148,16 +119,17 @@ public class EditProfile extends AppCompatActivity  {
                                 public void onStopTrackingTouch(SeekBar seekBar) {
                                 }
                             });
-                            mArrayList = (ArrayList<String>) value.get("allergens");
-                            autoVeg.setText(value.get("veg").toString());
-                            mAdapter = new EditProfileAdapter(getApplicationContext(), mArrayList);
-                            allergenListView = findViewById(R.id.listViewAllergens);
+                            ArrayList<String> newArrayList = (ArrayList<String>)value.get("allergens");
+                            for(int i=0;i<newArrayList.size();i++){
+                                mArrayList.add(newArrayList.get(i));
+                            }
+                            mAdapter.notifyDataSetChanged();
                             allergenListView.setAdapter(mAdapter);
+                            autoVeg.setText(value.get("veg").toString());
                             allergenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     mArrayList.remove(position);
-                                    mAdapter.notifyDataSetChanged();
                                 }
                             });
 
@@ -199,6 +171,7 @@ public class EditProfile extends AppCompatActivity  {
                 }
             }
         });
+        function();
 
     }
 
@@ -244,6 +217,63 @@ public class EditProfile extends AppCompatActivity  {
 
     public void goBack(View view){
         //go to history page
+    }
+
+    public void function(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference mDocumentReference1 = db.collection("predictableItems").document("#Allergens");
+        mDocumentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot mDocumentSnapshot = task.getResult();
+                    if (mDocumentSnapshot != null && mDocumentSnapshot.exists()) {
+                        allergens = (ArrayList<String>) mDocumentSnapshot.get("items");
+                        autoAllergen = findViewById(R.id.autoAllergens);
+                        adapterAllergens = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, allergens);
+                        Log.i("yyy", allergens.toString());
+                        autoAllergen.setAdapter(adapterAllergens);
+                        autoAllergen.setThreshold(1);
+                        autoAllergen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
+                                if(mArrayList.contains(arg0.getItemAtPosition(arg2).toString())){
+                                    Toast.makeText(EditProfile.this, "Item already present in the list", Toast.LENGTH_SHORT).show();
+                                    adapterAllergens.notifyDataSetChanged();
+                                }
+                                else{
+                                    mArrayList.add(arg0.getItemAtPosition(arg2).toString());
+                                    autoAllergen.setText("");
+                                    mAdapter.notifyDataSetChanged();
+                                    allergenListView.setAdapter(mAdapter);
+                                }
+                            }
+                        });
+                        s.setProgress(spice);
+                        s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                                spice =i;
+                            }
+
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {
+
+                            }
+
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {
+                            }
+                        });
+                        Log.i("ALLERGENS", allergens + "");
+                    }
+
+                } else {
+                    Log.i("ERR", "" + task.getException());
+                }
+            }
+        });
     }
 }
 
