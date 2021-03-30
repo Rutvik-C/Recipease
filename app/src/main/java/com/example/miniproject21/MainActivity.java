@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 Map<String, Object> mMap = new HashMap<>();
                                 mMap.put("email", email);
                                 mMap.put("history", new ArrayList<String>());
+                                mMap.put("liked", new ArrayList<String>());
 
 
                                 assert user != null;
