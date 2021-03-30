@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +33,14 @@ public class HomePage extends AppCompatActivity {
     //final int LEN_CLASSES = 20;
     //String[] CLASSES;
 
+
+    public void takeToResult(View view) {
+        Button mButton = (Button) view;
+
+        Intent intent = new Intent(this, ResultsActivity.class);
+        intent.putExtra("item", mButton.getText().toString());
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

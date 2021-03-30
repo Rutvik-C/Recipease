@@ -22,12 +22,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.miniproject21.ButtonListAdapter;
 import com.example.miniproject21.HomePage;
 import com.example.miniproject21.R;
 import com.example.miniproject21.ResultsActivity;
@@ -71,15 +74,42 @@ public class UploadPageFragment extends Fragment {
 
     static int LEN_CLASSES;
     ArrayList<String> CLASSES;
+    ArrayList<String> predictedSubTypes;
+    boolean subTypesReady = false;
 
     boolean predicted = false;
     @SuppressLint("StaticFieldLeak")
     static ProgressBar progressBar;
 
 
+    public void getSubTypes(String itemName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("predictableItems").document(itemName);
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if (document != null && document.exists()) {
+                    predictedSubTypes.clear();
+                    predictedSubTypes.addAll((ArrayList<String>) document.get("items"));
+                    subTypesReady = true;
+
+                    Log.i("HERE", "Fetched!");
+
+                } else {
+                    Toast.makeText(getContext(), "Unable to find this item", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+    }
+
     public void makePredictions() {
 
         if (bitmap != null) {
+            subTypesReady = false;
+
             imageView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             try {
@@ -89,6 +119,7 @@ public class UploadPageFragment extends Fragment {
 
                 predicted = true;
 
+                getSubTypes(CLASSES.get(index));
                 gotoResultButton.setText(CLASSES.get(index));
                 gotoResultButton.setVisibility(View.VISIBLE);
                 getInformationButton.setVisibility(View.INVISIBLE);
@@ -235,6 +266,7 @@ public class UploadPageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upload_page, container, false);
 
+        predictedSubTypes = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference mDocumentReference = db.collection("predictableItems").document("#PredItem");
@@ -311,23 +343,23 @@ public class UploadPageFragment extends Fragment {
         getInformationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // makePredictions();
+                makePredictions();
 
-                View mView = LayoutInflater.from(getContext()).inflate(R.layout.choice_alert_box, null);
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-
-                mBuilder.setView(mView);
-
-                AlertDialog mAlertDialog = mBuilder.create();
-                mAlertDialog.show();
-
-                Button button = mView.findViewById(R.id.alertButton1);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.i("NESTED", "Possible!");
-                    }
-                });
+//                View mView = LayoutInflater.from(getContext()).inflate(R.layout.choice_alert_box, null);
+//                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+//
+//                mBuilder.setView(mView);
+//
+//                AlertDialog mAlertDialog = mBuilder.create();
+//                mAlertDialog.show();
+//
+//                Button button = mView.findViewById(R.id.alertButton1);
+//                button.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Log.i("NESTED", "Possible!");
+//                    }
+//                });
 
             }
         });
@@ -335,12 +367,42 @@ public class UploadPageFragment extends Fragment {
         gotoResultButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), ResultsActivity.class);
-                intent.putExtra("item", gotoResultButton.getText());
-                startActivity(intent);
+                if (subTypesReady) {
+                    if (predictedSubTypes.size() == 1) {
+                        Intent intent = new Intent(getContext(), ResultsActivity.class);
+                        intent.putExtra("item", gotoResultButton.getText());
+                        startActivity(intent);
 
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+                    } else {
+                        Log.i("INFO", "MULTIPLE");
+
+                        View mView = LayoutInflater.from(getContext()).inflate(R.layout.choice_alert_box, null);
+                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+
+                        mBuilder.setView(mView);
+
+                        final AlertDialog mAlertDialog = mBuilder.create();
+                        mAlertDialog.show();
+
+                        ListView listView = mView.findViewById(R.id.buttonsListView);
+                        assert getContext() != null;
+                        ButtonListAdapter buttonListAdapter = new ButtonListAdapter(getContext(), predictedSubTypes);
+                        listView.setAdapter(buttonListAdapter);
+
+                    }
+
+
+                } else {
+                    Toast.makeText(getContext(), "Fetching information...\nRetry uploading image...", Toast.LENGTH_SHORT).show();
+
+                }
+
+//                Intent intent = new Intent(getContext(), ResultsActivity.class);
+//                intent.putExtra("item", gotoResultButton.getText());
+//                startActivity(intent);
+//
+//                FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
                 // Check if many and make appropriate alert boxes
 
