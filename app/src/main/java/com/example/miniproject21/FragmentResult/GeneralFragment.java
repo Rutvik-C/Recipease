@@ -1,5 +1,7 @@
 package com.example.miniproject21.FragmentResult;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +15,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.miniproject21.HomePage;
 import com.example.miniproject21.R;
 import com.example.miniproject21.ResultsActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GeneralFragment extends Fragment {
 
@@ -40,9 +50,76 @@ public class GeneralFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_general_result, container, false);
 
+        final HashMap<Integer, String> mMap = new HashMap<>();
+        mMap.put(0, "Jain");
+        mMap.put(1, "Vegetarian");
+        mMap.put(2, "Non Vegetarian");
+
         // code here
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        final DocumentReference docRef = db.collection("foodItems").document(ResultsActivity.item);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        String result = "";
+
+                        long foodCat = (long) document.get("category");
+                        long foodSpice = (long) document.get("spice_level");
+                        ArrayList<String> foodContents = (ArrayList<String>) document.get("nv_ingredients");
+                        Log.i("FOOD INFO", "" + foodCat + " " + foodSpice + " " + foodContents);
+
+                        long userCat = (long) ResultsActivity.userDoc.get("preference");
+                        long userSpice = (long) ResultsActivity.userDoc.get("spice");
+                        ArrayList<String> userAllergen = (ArrayList<String>) ResultsActivity.userDoc.get("allergens");
+                        Log.i("USER INFO", "" + userCat + " " + userSpice + " " + userAllergen);
+
+                        if (userCat < foodCat) {
+                            result += "The food is marked " + mMap.get((int) foodCat) + "!\n";
+                        }
+                        if (userSpice + 2 < foodSpice) {
+                            result += "The food might be spicy for you!\n";
+                        }
+                        for (String s1 : foodContents) {
+                            for (String s2 : userAllergen) {
+                                if (s1.equals(s2)) {
+                                    result += s1 + ", ";
+                                }
+                            }
+                        }
+
+                        if (!result.equals("")) {
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle("Alert!")
+                                    .setMessage(result)
+                                    .setCancelable(false)
+                                    .setPositiveButton("I Understand, Proceed", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.cancel();
+
+                                        }
+                                    })
+                                    .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            getActivity().onBackPressed();
+
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+
+                        }
+
+                    }
+                }
+            }
+        });
 
         TextView mTextView = view.findViewById(R.id.dishName);
         mTextView.setText(ResultsActivity.item);

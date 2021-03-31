@@ -13,7 +13,14 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.miniproject21.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ResultsActivity extends AppCompatActivity {
 
@@ -21,10 +28,12 @@ public class ResultsActivity extends AppCompatActivity {
     static BottomNavigationView bottomNavigationView;
     static Menu menu;
     public static String item;
+    public static DocumentSnapshot userDoc;
 
     public static Menu getMenu() {
         return menu;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +84,25 @@ public class ResultsActivity extends AppCompatActivity {
                 }
 
                 return false;
+            }
+        });
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = firebaseAuth.getCurrentUser();
+
+        assert mUser != null;
+        DocumentReference docRef = db.collection("Users").document(mUser.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        userDoc = document;
+                    }
+                }
             }
         });
 

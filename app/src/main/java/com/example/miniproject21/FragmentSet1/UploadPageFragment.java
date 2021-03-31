@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -81,6 +82,13 @@ public class UploadPageFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     static ProgressBar progressBar;
 
+
+    public void addToHistoryAndProceed(String itemName) {
+        Intent intent = new Intent(getContext(), ResultsActivity.class);
+        intent.putExtra("item", itemName);
+        startActivity(intent);
+
+    }
 
     public void getSubTypes(String itemName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -268,7 +276,7 @@ public class UploadPageFragment extends Fragment {
 
         predictedSubTypes = new ArrayList<>();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference mDocumentReference = db.collection("predictableItems").document("#PredItem");
         mDocumentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -345,22 +353,6 @@ public class UploadPageFragment extends Fragment {
             public void onClick(View v) {
                 makePredictions();
 
-//                View mView = LayoutInflater.from(getContext()).inflate(R.layout.choice_alert_box, null);
-//                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-//
-//                mBuilder.setView(mView);
-//
-//                AlertDialog mAlertDialog = mBuilder.create();
-//                mAlertDialog.show();
-//
-//                Button button = mView.findViewById(R.id.alertButton1);
-//                button.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Log.i("NESTED", "Possible!");
-//                    }
-//                });
-
             }
         });
 
@@ -370,8 +362,18 @@ public class UploadPageFragment extends Fragment {
                 if (subTypesReady) {
                     if (predictedSubTypes.size() == 1) {
                         Intent intent = new Intent(getContext(), ResultsActivity.class);
-                        intent.putExtra("item", gotoResultButton.getText());
+                        intent.putExtra("item", predictedSubTypes.get(0));
                         startActivity(intent);
+
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                        // Increasing search count
+                        db.collection("foodItems").document(predictedSubTypes.get(0)).update("search_count", FieldValue.increment(1));
+
+                        // Adding to user history
+                        assert mUser != null;
+                        db.collection("Users").document(mUser.getUid()).update("history", FieldValue.arrayUnion(predictedSubTypes.get(0)));
 
                     } else {
                         Log.i("INFO", "MULTIPLE");
@@ -396,23 +398,6 @@ public class UploadPageFragment extends Fragment {
                     Toast.makeText(getContext(), "Fetching information...\nRetry uploading image...", Toast.LENGTH_SHORT).show();
 
                 }
-
-//                Intent intent = new Intent(getContext(), ResultsActivity.class);
-//                intent.putExtra("item", gotoResultButton.getText());
-//                startActivity(intent);
-//
-//                FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-
-                // Check if many and make appropriate alert boxes
-
-                // CURRENTLY COMMENTED TO AVOID DB INCONSISTENCY
-                // Increasing search count
-                // db.collection("foodItems").document(gotoResultButton.getText().toString()).update("search_count", FieldValue.increment(1));
-
-                // Adding to user history
-                // assert mUser != null;
-                // db.collection("Users").document(mUser.getUid()).update("history", FieldValue.arrayUnion(gotoResultButton.getText()));
 
             }
         });
