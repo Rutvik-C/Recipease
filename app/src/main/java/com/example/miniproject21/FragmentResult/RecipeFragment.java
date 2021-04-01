@@ -80,18 +80,25 @@ public class RecipeFragment extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         recipeArrayList = new ArrayList<>();
-                        recipeArrayList.add(new RecipeCardModel("Ingredients", ""));
+                        //recipeArrayList.add(new RecipeCardModel("Ingredients", ""));
                         ingredients=(ArrayList<String>)document.getData().get("ingredients_recipe");
+                        //for(int i=0;i<ingredients.size();i++){
+                          //  infoArrayList.add(new RecipeCardModel("Ingredient no. "+String.valueOf(i+1), ingredients.get(i)));
+                        //}
+                        String s="";
                         for(int i=0;i<ingredients.size();i++){
-                            recipeArrayList.add(new RecipeCardModel("Ingredient no. "+String.valueOf(i+1), ingredients.get(i)));
+                            s+=ingredients.get(i);
+                            if(i!=ingredients.size()-1)
+                                s+="\n";
                         }
-                        recipeArrayList.add(new RecipeCardModel("Preparation Time",document.getData().get("r_prep_time").toString()));
-                        recipeArrayList.add(new RecipeCardModel("Cooking Time",document.getData().get("r_cook_time").toString()));
-                        recipeArrayList.add(new RecipeCardModel("Total Time",document.getData().get("r_total_time").toString()));
-                        recipeArrayList.add(new RecipeCardModel("Steps", ""));
+                        infoArrayList.add(new RecipeCardModel("Ingredients",s));
+                        infoArrayList.add(new RecipeCardModel("Preparation Time",document.getData().get("r_prep_time").toString()));
+                        infoArrayList.add(new RecipeCardModel("Cooking Time",document.getData().get("r_cook_time").toString()));
+                        infoArrayList.add(new RecipeCardModel("Total Time",document.getData().get("r_total_time").toString()));
+                        //recipeArrayList.add(new RecipeCardModel("Steps", ""));
                         steps=(ArrayList<String>)document.getData().get("r_steps");
                         for(int i=0;i<steps.size();i++){
-                            recipeArrayList.add(new RecipeCardModel("Step no. "+String.valueOf(i+1), steps.get(i)));
+                            recipeArrayList.add(new RecipeCardModel("Step "+String.valueOf(i+1), steps.get(i)));
                         }
                         // we are initializing our adapter class and passing our arraylist to it.
                         RecipeCardAdapter recipeAdapter = new RecipeCardAdapter(requireContext(), recipeArrayList);
@@ -104,8 +111,8 @@ public class RecipeFragment extends Fragment {
                         recipeRecyclerView.setLayoutManager(linearLayoutManager);
                         recipeRecyclerView.setAdapter(recipeAdapter);
 
-                        infoArrayList.add(new RecipeCardModel("Test0","Test0"));
-                        infoArrayList.add(new RecipeCardModel("Test1","Test1"));
+                        //infoArrayList.add(new RecipeCardModel("Test0","Test0"));
+                        //infoArrayList.add(new RecipeCardModel("Test1","Test1"));
                         RecipeCardAdapter infoAdapter = new RecipeCardAdapter(requireContext(), infoArrayList);
                         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
                         infoRecyclerView.setLayoutManager(linearLayoutManager1);
