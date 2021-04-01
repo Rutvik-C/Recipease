@@ -32,6 +32,9 @@ public class RecipeFragment extends Fragment {
     public static RecyclerView recipeRecyclerView;
     public ArrayList<RecipeCardModel> recipeArrayList;
 
+    public static RecyclerView infoRecyclerView;
+    public ArrayList<RecipeCardModel> infoArrayList;
+
     ArrayList<String> ingredients;
     ArrayList<String> steps;
     FirebaseFirestore db;
@@ -63,9 +66,10 @@ public class RecipeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recipeRecyclerView = getActivity().findViewById(R.id.idRecipe);
+        infoRecyclerView=getActivity().findViewById(R.id.idRecipefirst);
         ingredients = new ArrayList<String>();
         steps = new ArrayList<String>();
-
+        infoArrayList=new ArrayList<>();
         // here we have created new array list and added data to it.
 
         DocumentReference docRef = db.collection("foodItems").document(ResultsActivity.item);
@@ -99,6 +103,13 @@ public class RecipeFragment extends Fragment {
                         // in below two lines we are setting layoutmanager and adapter to our recycler view.
                         recipeRecyclerView.setLayoutManager(linearLayoutManager);
                         recipeRecyclerView.setAdapter(recipeAdapter);
+
+                        infoArrayList.add(new RecipeCardModel("Test0","Test0"));
+                        infoArrayList.add(new RecipeCardModel("Test1","Test1"));
+                        RecipeCardAdapter infoAdapter = new RecipeCardAdapter(requireContext(), infoArrayList);
+                        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+                        infoRecyclerView.setLayoutManager(linearLayoutManager1);
+                        infoRecyclerView.setAdapter(infoAdapter);
 
                     } else {
                         Log.i("ttt", "No such document");
