@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,13 +24,15 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class ResultsActivity extends AppCompatActivity {
 
     static ViewPager viewPager;
     static BottomNavigationView bottomNavigationView;
     static Menu menu;
     public static String item;
-    public static DocumentSnapshot userDoc;
 
     public static Menu getMenu() {
         return menu;
@@ -87,10 +91,15 @@ public class ResultsActivity extends AppCompatActivity {
             }
         });
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = firebaseAuth.getCurrentUser();
+
+        final HashMap<Integer, String> mMap = new HashMap<>();
+        mMap.put(0, "Jain");
+        mMap.put(1, "Vegetarian");
+        mMap.put(2, "Non Vegetarian");
 
         assert mUser != null;
         DocumentReference docRef = db.collection("Users").document(mUser.getUid());
@@ -98,9 +107,71 @@ public class ResultsActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists()) {
-                        userDoc = document;
+                    final DocumentSnapshot userDocument = task.getResult();
+                    if (userDocument != null && userDocument.exists()) {
+
+                        DocumentReference docRef = db.collection("foodItems").document(ResultsActivity.item);
+                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document != null && document.exists()) {
+                                        String result = "";
+
+                                        long foodCat = (long) document.get("category");
+                                        long foodSpice = (long) document.get("spice_level");
+                                        ArrayList<String> foodContents = (ArrayList<String>) document.get("nv_ingredients");
+                                        Log.i("FOOD INFO", "" + foodCat + " " + foodSpice + " " + foodContents);
+
+                                        long userCat = (long) userDocument.get("preference");
+                                        long userSpice = (long) userDocument.get("spice");
+                                        ArrayList<String> userAllergen = (ArrayList<String>) userDocument.get("allergens");
+                                        Log.i("USER INFO", "" + userCat + " " + userSpice + " " + userAllergen);
+
+                                        if (userCat < foodCat) {
+                                            result += "The food is marked " + mMap.get((int) foodCat) + "!\n";
+                                        }
+                                        if (userSpice + 2 < foodSpice) {
+                                            result += "The food might be spicy for you!\n";
+                                        }
+                                        for (String s1 : foodContents) {
+                                            for (String s2 : userAllergen) {
+                                                if (s1.equals(s2)) {
+                                                    result += s1 + ", ";
+                                                }
+                                            }
+                                        }
+
+                                        if (!result.equals("")) {
+                                            new AlertDialog.Builder(ResultsActivity.this)
+                                                    .setTitle("Alert!")
+                                                    .setMessage(result)
+                                                    .setCancelable(false)
+                                                    .setPositiveButton("I Understand, Proceed", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            dialogInterface.cancel();
+
+                                                        }
+                                                    })
+                                                    .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            ResultsActivity.this.onBackPressed();
+
+                                                        }
+                                                    })
+                                                    .create()
+                                                    .show();
+
+                                        }
+
+                                    }
+                                }
+
+                            }
+                        });
                     }
                 }
             }

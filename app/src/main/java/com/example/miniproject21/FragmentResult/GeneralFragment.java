@@ -56,76 +56,9 @@ public class GeneralFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_general_result, container, false);
 
-        final HashMap<Integer, String> mMap = new HashMap<>();
-        mMap.put(0, "Jain");
-        mMap.put(1, "Vegetarian");
-        mMap.put(2, "Non Vegetarian");
-
         // code here
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        final DocumentReference docRef = db.collection("foodItems").document(ResultsActivity.item);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists()) {
-                        String result = "";
-
-                        long foodCat = (long) document.get("category");
-                        long foodSpice = (long) document.get("spice_level");
-                        ArrayList<String> foodContents = (ArrayList<String>) document.get("nv_ingredients");
-                        Log.i("FOOD INFO", "" + foodCat + " " + foodSpice + " " + foodContents);
-
-                        long userCat = (long) ResultsActivity.userDoc.get("preference");
-                        long userSpice = (long) ResultsActivity.userDoc.get("spice");
-                        ArrayList<String> userAllergen = (ArrayList<String>) ResultsActivity.userDoc.get("allergens");
-                        Log.i("USER INFO", "" + userCat + " " + userSpice + " " + userAllergen);
-
-                        if (userCat < foodCat) {
-                            result += "The food is marked " + mMap.get((int) foodCat) + "!\n";
-                        }
-                        if (userSpice + 2 < foodSpice) {
-                            result += "The food might be spicy for you!\n";
-                        }
-                        for (String s1 : foodContents) {
-                            for (String s2 : userAllergen) {
-                                if (s1.equals(s2)) {
-                                    result += s1 + ", ";
-                                }
-                            }
-                        }
-
-                        if (!result.equals("")) {
-                            new AlertDialog.Builder(getContext())
-                                    .setTitle("Alert!")
-                                    .setMessage(result)
-                                    .setCancelable(false)
-                                    .setPositiveButton("I Understand, Proceed", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-
-                                        }
-                                    })
-                                    .setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            getActivity().onBackPressed();
-
-                                        }
-                                    })
-                                    .create()
-                                    .show();
-
-                        }
-
-                    }
-                }
-            }
-        });
 
         final ImageView mImageView = view.findViewById(R.id.dishImage);
 
@@ -133,7 +66,6 @@ public class GeneralFragment extends Fragment {
         mRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Log.i("URI", uri.toString());
                 Glide.with(getContext())
                         .load(uri)
                         .placeholder(R.drawable.image_progress)
