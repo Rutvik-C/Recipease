@@ -40,8 +40,6 @@ public class GeneralFragment extends Fragment {
 
     ImageView imageView;
 
-    Boolean isLike=false;
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -72,7 +70,6 @@ public class GeneralFragment extends Fragment {
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(mImageView);
 
-
             }
         });
 
@@ -80,12 +77,15 @@ public class GeneralFragment extends Fragment {
         mTextView.setText(ResultsActivity.item);
 
         imageView=view.findViewById(R.id.imageView);
+        if (ResultsActivity.cloudLiked) {
+            imageView.setImageResource(R.drawable.ic_liked);
+        }
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLike){
-                    isLike=false;
+                if(ResultsActivity.cloudLiked){
+                    ResultsActivity.cloudLiked=false;
                     Toast.makeText(getContext(), "Removed from liked items", Toast.LENGTH_SHORT).show();
 
                     assert mUser != null;
@@ -93,7 +93,7 @@ public class GeneralFragment extends Fragment {
 
                     imageView.setImageResource(R.drawable.ic_like);
                 }else{
-                    isLike=true;
+                    ResultsActivity.cloudLiked=true;
                     Toast.makeText(getContext(), "Added to liked items", Toast.LENGTH_SHORT).show();
 
                     assert mUser != null;

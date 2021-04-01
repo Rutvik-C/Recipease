@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.miniproject21.R;
@@ -33,6 +34,7 @@ public class ResultsActivity extends AppCompatActivity {
     static BottomNavigationView bottomNavigationView;
     static Menu menu;
     public static String item;
+    public static boolean cloudLiked;
 
     public static Menu getMenu() {
         return menu;
@@ -109,6 +111,15 @@ public class ResultsActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     final DocumentSnapshot userDocument = task.getResult();
                     if (userDocument != null && userDocument.exists()) {
+
+                        ArrayList<String> likedItems = (ArrayList<String>) userDocument.get("liked");
+                        if (likedItems.contains(item)) {
+                            cloudLiked = true;
+
+                        } else {
+                            cloudLiked = false;
+
+                        }
 
                         DocumentReference docRef = db.collection("foodItems").document(ResultsActivity.item);
                         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
