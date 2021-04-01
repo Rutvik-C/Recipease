@@ -2,6 +2,7 @@ package com.example.miniproject21.FragmentResult;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,10 +16,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.miniproject21.HomePage;
 import com.example.miniproject21.R;
 import com.example.miniproject21.ResultsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +30,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,6 +124,23 @@ public class GeneralFragment extends Fragment {
 
                     }
                 }
+            }
+        });
+
+        final ImageView mImageView = view.findViewById(R.id.dishImage);
+
+        StorageReference mRef =FirebaseStorage.getInstance().getReference("icons").child(ResultsActivity.item + ".png");
+        mRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.i("URI", uri.toString());
+                Glide.with(getContext())
+                        .load(uri)
+                        .placeholder(R.drawable.image_progress)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(mImageView);
+
+
             }
         });
 
