@@ -155,7 +155,7 @@ public class ResultsActivity extends AppCompatActivity {
                                         }
 
                                         if (!result.equals("")) {
-                                            new AlertDialog.Builder(ResultsActivity.this)
+                                            new AlertDialog.Builder(ResultsActivity.this,R.style.AlertDialog)
                                                     .setTitle("Alert!")
                                                     .setMessage(result)
                                                     .setCancelable(false)
