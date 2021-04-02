@@ -53,11 +53,13 @@ public class VideoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //TODO: Add video link in below string
+        final String url="JpVIUty7Suk";
         YouTubePlayer.OnInitializedListener onInitializedListener = new
                 YouTubePlayer.OnInitializedListener() {
                     @Override
                     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                        youTubePlayer.loadVideo("JpVIUty7Suk");
+                        youTubePlayer.loadVideo(url);
                     }
 
                     @Override
