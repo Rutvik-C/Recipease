@@ -27,7 +27,7 @@
             android:layout_margin="10dp"
             android:contentDescription="@string/app_name"
             android:padding="5dp"
-            android:src="@drawable/logo" />
+            android:src="@drawable/loading" />
 
         <!--Text View to display Course Name-->
         <TextView
