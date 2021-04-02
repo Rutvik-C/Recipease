@@ -35,6 +35,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -74,12 +76,10 @@ public class EditProfile extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        logoutButton = findViewById(R.id.LogOut);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-        //TODO: Get email ID of user and store in below string
-        String emailID="Email ID";
-        logoutButton.setText("Hi "+s+"\nWish to log out now?");
+
         s = (SeekBar) findViewById(R.id.seekBar);
         s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -168,6 +168,10 @@ public class EditProfile extends AppCompatActivity  {
 
         // FETCH USER DATA IF EXISTS
         assert mUser != null;
+
+        TextView mTextView = findViewById(R.id.textViewUserId);
+        mTextView.setText(mUser.getEmail());
+
         final DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
         mDocumentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -228,12 +232,12 @@ public class EditProfile extends AppCompatActivity  {
         
     }
     public void logOut(View view){
-                FirebaseAuth.getInstance().signOut();
+        FirebaseAuth.getInstance().signOut();
 
-                Intent intent = new Intent(EditProfile.this, MainActivity.class);
-                startActivity(intent);
+        Intent intent = new Intent(EditProfile.this, MainActivity.class);
+        startActivity(intent);
 
-                assert EditProfile.this != null;
-                finish();
+        assert EditProfile.this != null;
+        finish();
     }
 }
