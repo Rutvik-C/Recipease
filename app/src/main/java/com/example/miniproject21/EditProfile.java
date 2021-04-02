@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -56,16 +57,14 @@ public class EditProfile extends AppCompatActivity  {
     EditProfileAdapter mAdapter;
     ArrayAdapter<String> adapterAllergens;
     ArrayAdapter<String> adapterVeg;
-
+    Button logoutButton;
     int preference = 0;
 
     SeekBar s;
 
     public void dismissAllergen(View view) {
         ImageView mImageView = (ImageView) view;
-
         int index = Integer.parseInt(mImageView.getTag().toString());
-
         mArrayList.remove(index);
         mAdapter.notifyDataSetChanged();
 
@@ -75,10 +74,12 @@ public class EditProfile extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
+        logoutButton = findViewById(R.id.LogOut);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-
+        //TODO: Get email ID of user and store in below string
+        String emailID="Email ID";
+        logoutButton.setText("Hi "+s+"\nWish to log out now?");
         s = (SeekBar) findViewById(R.id.seekBar);
         s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -225,5 +226,14 @@ public class EditProfile extends AppCompatActivity  {
             }
         });
         
+    }
+    public void logOut(View view){
+                FirebaseAuth.getInstance().signOut();
+
+                Intent intent = new Intent(EditProfile.this, MainActivity.class);
+                startActivity(intent);
+
+                assert EditProfile.this != null;
+                finish();
     }
 }

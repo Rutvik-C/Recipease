@@ -66,19 +66,7 @@ public class HistoryPageFragment extends Fragment {
             }
         });
 
-        Button logoutButton = requireActivity().findViewById(R.id.buttonLogout);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
 
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                startActivity(intent);
-
-                assert getActivity() != null;
-                getActivity().finish();
-            }
-        });
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
