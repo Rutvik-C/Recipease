@@ -146,10 +146,18 @@ public class ResultsActivity extends AppCompatActivity {
                                         if (userSpice + 2 < foodSpice) {
                                             result += "The food might be spicy for you!\n";
                                         }
+                                        int count=0;
+
                                         for (String s1 : foodContents) {
                                             for (String s2 : userAllergen) {
                                                 if (s1.equals(s2)) {
-                                                    result += s1 + ", ";
+                                                    if (count>0)
+                                                        result+=", "+s1;
+                                                    else {
+                                                        result+="This dish may contain ";
+                                                        result += s1 + " ";
+                                                        count=1;
+                                                    }
                                                 }
                                             }
                                         }
