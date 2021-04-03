@@ -4,10 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -15,7 +16,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -31,6 +30,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.miniproject21.ApiHelper.ApiInterface;
+import com.example.miniproject21.ApiHelper.FoodPredictorResult;
 import com.example.miniproject21.ButtonListAdapter;
 import com.example.miniproject21.HomePage;
 import com.example.miniproject21.R;
@@ -48,18 +49,25 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.tensorflow.lite.Interpreter;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UploadPageFragment extends Fragment {
 
@@ -71,7 +79,9 @@ public class UploadPageFragment extends Fragment {
     static Interpreter interpreter;
     Bitmap bitmap;
     ImageView imageView;
-    Button getInformationButton, gotoResultButton;
+    TextView messageTextView;
+    Button retryButton, gotoResultButton;
+    Uri currentImageUri;
 
     static int LEN_CLASSES;
     ArrayList<String> CLASSES;
@@ -118,7 +128,6 @@ public class UploadPageFragment extends Fragment {
         if (bitmap != null) {
             subTypesReady = false;
 
-            imageView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             try {
                 Predictor predictor = new Predictor();
@@ -130,7 +139,7 @@ public class UploadPageFragment extends Fragment {
                 getSubTypes(CLASSES.get(index));
                 gotoResultButton.setText(CLASSES.get(index));
                 gotoResultButton.setVisibility(View.VISIBLE);
-                getInformationButton.setVisibility(View.INVISIBLE);
+                retryButton.setVisibility(View.INVISIBLE);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -219,6 +228,119 @@ public class UploadPageFragment extends Fragment {
         }
     }
 
+    public Uri saveBitmapImage(Context inContext, Bitmap inImage) {
+        Log.i("SAVE", "saving image...");
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "recipease", null);
+        return Uri.parse(path);
+    }
+
+    public String getFilePathFromUri(Uri uri) {
+        String path = "";
+        if (HomePage.contextOfApplication.getContentResolver() != null) {
+            Cursor cursor = HomePage.contextOfApplication.getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+
+        return path;
+    }
+
+    public void getPredictionsFromServer() {
+        progressBar.setVisibility(View.VISIBLE);
+        messageTextView.setVisibility(View.INVISIBLE);
+
+        try {
+            Bitmap photo = MediaStore.Images.Media.getBitmap(HomePage.contextOfApplication.getContentResolver(), currentImageUri);
+            imageView.setImageBitmap(photo);
+
+            Uri tempUri = saveBitmapImage(getContext(), photo);
+            String filePath = getFilePathFromUri(tempUri);
+
+            final File file = new File(filePath);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ApiInterface.BASE_URL_PREDICTOR)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+            Call<FoodPredictorResult> mCall = apiInterface.sendImage(body);
+
+            mCall.enqueue(new Callback<FoodPredictorResult>() {
+                @Override
+                public void onResponse(Call<FoodPredictorResult> call, Response<FoodPredictorResult> response) {
+                    FoodPredictorResult mResult = response.body();
+
+                    if (mResult.isFood()) {
+                        Log.i("CATEGORY", mResult.getCategory() + " " + mResult.getConfidence());
+
+                        String text = "Results:-";
+                        messageTextView.setText(text);
+
+                        getSubTypes(mResult.getCategory());
+                        gotoResultButton.setText(mResult.getCategory());
+                        gotoResultButton.setVisibility(View.VISIBLE);
+                        retryButton.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        String text = "The image is not a food item";
+                        messageTextView.setText(text);
+
+                        Log.i("NOT", "FOOD");
+
+                    }
+
+                    messageTextView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+
+
+
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<FoodPredictorResult> call, Throwable t) {
+                    Log.i("ERROR", "There was an error " + t.getMessage());
+
+                    String text = "There was some error";
+                    messageTextView.setText(text);
+                    messageTextView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+
+                    retryButton.setVisibility(View.VISIBLE);
+
+                    if (file.exists()) {
+                        file.delete();
+                    }
+
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            String text = "There was some error";
+            messageTextView.setText(text);
+            messageTextView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
+
+            retryButton.setVisibility(View.VISIBLE);
+        }
+
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -226,14 +348,19 @@ public class UploadPageFragment extends Fragment {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
 
-            if (photo.getHeight() >= photo.getWidth()) {
-                bitmap = Bitmap.createBitmap(photo, 0, photo.getHeight() / 2 - photo.getWidth() / 2, photo.getWidth(), photo.getWidth());
-            } else {
-                bitmap = Bitmap.createBitmap(photo, photo.getWidth() / 2 - photo.getHeight() / 2, 0, photo.getHeight(), photo.getHeight());
-            }
+            Uri tempUri = saveBitmapImage(getContext(), photo);
 
-            imageView.setImageBitmap(bitmap);
-            // BITMAP READY
+            CropImage.activity(tempUri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                    .setAspectRatio(1, 1)
+                    .start(getContext(), this);
+
+//            if (photo.getHeight() >= photo.getWidth()) {
+//                bitmap = Bitmap.createBitmap(photo, 0, photo.getHeight() / 2 - photo.getWidth() / 2, photo.getWidth(), photo.getWidth());
+//            } else {
+//                bitmap = Bitmap.createBitmap(photo, photo.getWidth() / 2 - photo.getHeight() / 2, 0, photo.getHeight(), photo.getHeight());
+//            }
 
         }
 
@@ -254,18 +381,11 @@ public class UploadPageFragment extends Fragment {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
 
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            Uri uri = result.getUri();
+            currentImageUri = result.getUri();
             Log.i("IMG CROPPER", "In cropper");
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(HomePage.contextOfApplication.getContentResolver(), uri);
 
-                imageView.setImageBitmap(bitmap);
-                Log.i("IMG CROPPER TRY", "Image set");
-                // BITMAP READY
+            getPredictionsFromServer();
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -275,6 +395,7 @@ public class UploadPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_upload_page, container, false);
 
         predictedSubTypes = new ArrayList<>();
+        messageTextView = view.findViewById(R.id.messageTextView);
 
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference mDocumentReference = db.collection("predictableItems").document("#PredItem");
@@ -298,18 +419,18 @@ public class UploadPageFragment extends Fragment {
             }
         });
 
-        getInformationButton = view.findViewById(R.id.buttonDetect);
+        retryButton = view.findViewById(R.id.buttonDetect);
         gotoResultButton = view.findViewById(R.id.gotoResultButton);
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        try {
-            interpreter = new Interpreter(loadModel());
-            Log.i("Done", "Model loaded");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            interpreter = new Interpreter(loadModel());
+//            Log.i("Done", "Model loaded");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         imageView = view.findViewById(R.id.imageViewSelectImage);
 
@@ -317,7 +438,8 @@ public class UploadPageFragment extends Fragment {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getInformationButton.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.INVISIBLE);
+
                 gotoResultButton.setVisibility(View.INVISIBLE);
 
                 if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -334,7 +456,8 @@ public class UploadPageFragment extends Fragment {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getInformationButton.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.INVISIBLE);
+
                 gotoResultButton.setVisibility(View.INVISIBLE);
 
                 if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -348,10 +471,12 @@ public class UploadPageFragment extends Fragment {
             }
         });
 
-        getInformationButton.setOnClickListener(new View.OnClickListener() {
+        retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makePredictions();
+                getPredictionsFromServer();
+
+                retryButton.setVisibility(View.INVISIBLE);
 
             }
         });
@@ -405,14 +530,15 @@ public class UploadPageFragment extends Fragment {
         return view;
     }
 
-    private MappedByteBuffer loadModel() throws IOException {
-        assert getContext() != null;
-        AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifier40_81.tflite");
-        FileInputStream fileInputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
-        FileChannel fileChannel = fileInputStream.getChannel();
-        long startOffset = assetFileDescriptor.getStartOffset();
-        long declaredLength = assetFileDescriptor.getDeclaredLength();
+//    private MappedByteBuffer loadModel() throws IOException {
+//        assert getContext() != null;
+//        AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifier40_81.tflite");
+//        FileInputStream fileInputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
+//        FileChannel fileChannel = fileInputStream.getChannel();
+//        long startOffset = assetFileDescriptor.getStartOffset();
+//        long declaredLength = assetFileDescriptor.getDeclaredLength();
+//
+//        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+//    }
 
-        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-    }
 }
