@@ -44,14 +44,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class EditProfile extends AppCompatActivity  {
+public class EditProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     int spice;
 
     AutoCompleteTextView autoAllergen;
-    AutoCompleteTextView autoVeg;
 
-    String[] veg={"Any", "Jain", "Vegetarian", "Non-Vegetarian"};
+    Spinner spinnerVeg;
+
+    ArrayList<String> veg=new ArrayList<String>();
     ArrayList<String> allergens;
     ArrayList<String> mArrayList;
 
@@ -64,6 +65,8 @@ public class EditProfile extends AppCompatActivity  {
 
     SeekBar s;
 
+    String vegPreference;
+
     public void dismissAllergen(View view) {
         ImageView mImageView = (ImageView) view;
         int index = Integer.parseInt(mImageView.getTag().toString());
@@ -74,8 +77,14 @@ public class EditProfile extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
+        veg.add("Any");
+        veg.add("Jain");
+        veg.add("Vegetarian");
+        veg.add("Non-Vegetarian");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -100,29 +109,11 @@ public class EditProfile extends AppCompatActivity  {
         allergenListView.setAdapter(mAdapter);
 
 
-        autoVeg = findViewById(R.id.autoVeg);
+        spinnerVeg = findViewById(R.id.spinnerVeg);
         adapterVeg = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, veg);
-        autoVeg.setAdapter(adapterVeg);
-        autoVeg.setThreshold(1);
-        autoVeg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
-                autoVeg.setText(arg0.getItemAtPosition(arg2).toString());
-
-                switch (arg0.getItemAtPosition(arg2).toString()) {
-                    case "Jain":
-                        preference = 0;
-                        break;
-                    case "Vegetarian":
-                        preference = 1;
-                        break;
-                    case "Any":
-                    case "Non-Vegetarian":
-                        preference = 2;
-                        break;
-                }
-            }
-        });
+        adapterVeg.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerVeg.setAdapter(adapterVeg);
+        spinnerVeg.setOnItemSelectedListener(this);
 
 
         allergens = new ArrayList<>();
@@ -186,7 +177,14 @@ public class EditProfile extends AppCompatActivity  {
                             mArrayList.addAll((ArrayList<String>) mDocSnap.get("allergens"));
                             mAdapter.notifyDataSetChanged();
 
-                            autoVeg.setText(mDocSnap.get("veg").toString());
+                            String vegg=veg.get(0);
+                            veg.set(0,mDocSnap.get("veg").toString());
+                            for(int i=1;i<veg.size();i++){
+                                if(veg.get(i).equals(mDocSnap.get("veg").toString())){
+                                    veg.set(i,vegg);
+                                }
+                            }
+                            adapterVeg.notifyDataSetChanged();
 
                             preference = Integer.parseInt(mDocSnap.get("preference").toString());
                         }
@@ -195,6 +193,27 @@ public class EditProfile extends AppCompatActivity  {
             }
         });
 
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+
+        vegPreference=parent.getItemAtPosition(pos).toString();
+        if(s.equals("Jain")){
+            preference=0;
+        }
+        else if(s.equals("Vegetarian")){
+            preference=1;
+        }
+        else if(s.equals("Non-Vegetarian")){
+            preference=2;
+        }
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
     }
 
     @Override
@@ -210,7 +229,7 @@ public class EditProfile extends AppCompatActivity  {
         Map<String, Object> mMap = new HashMap<>();
         mMap.put("preference", preference);
         mMap.put("spice", spice);
-        mMap.put("veg", autoVeg.getText().toString());
+        mMap.put("veg", vegPreference);
         mMap.put("allergens", mArrayList);
 
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
