@@ -201,13 +201,13 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
         // parent.getItemAtPosition(pos)
 
         vegPreference=parent.getItemAtPosition(pos).toString();
-        if(s.equals("Jain")){
+        if(vegPreference.equals("Jain")){
             preference=0;
         }
-        else if(s.equals("Vegetarian")){
+        else if(vegPreference.equals("Vegetarian")){
             preference=1;
         }
-        else if(s.equals("Non-Vegetarian")){
+        else {
             preference=2;
         }
     }
