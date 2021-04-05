@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.miniproject21.FragmentResult.GeneralFragment;
 import com.example.miniproject21.FragmentResult.NutritionFragment;
 import com.example.miniproject21.FragmentResult.RecipeFragment;
+import com.example.miniproject21.FragmentResult.RecommendationFragment;
 import com.example.miniproject21.FragmentResult.VideoFragment;
 
 public class ResultFragmentAdapter extends FragmentPagerAdapter {
@@ -28,14 +29,17 @@ public class ResultFragmentAdapter extends FragmentPagerAdapter {
         } else if (position == 2) {
             return new NutritionFragment();
 
-        } else {
+        } else if (position == 3) {
             return new VideoFragment();
+
+        } else {
+            return new RecommendationFragment();
 
         }
     }
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 }

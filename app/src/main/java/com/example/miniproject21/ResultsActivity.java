@@ -15,7 +15,10 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.miniproject21.ApiHelper.ApiInterface;
+import com.example.miniproject21.ApiHelper.FoodRecommendationResult;
 import com.example.miniproject21.R;
+import com.example.miniproject21.TopTenCard.TopTenModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -28,6 +31,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ResultsActivity extends AppCompatActivity {
 
     static ViewPager viewPager;
@@ -35,6 +44,11 @@ public class ResultsActivity extends AppCompatActivity {
     static Menu menu;
     public static String item;
     public static boolean cloudLiked;
+
+    ArrayList<TopTenModel> mArrayList;
+    ArrayList<String> stringArrayList;
+    @SuppressLint("StaticFieldLeak")
+    public static CustomCardAdapter mAdapter;
 
     public static Menu getMenu() {
         return menu;
@@ -48,6 +62,9 @@ public class ResultsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         item = intent.getStringExtra("item");
+
+        mArrayList = new ArrayList<>();
+        stringArrayList = new ArrayList<>();
 
         Log.i("INTENT", item);
 
@@ -86,6 +103,11 @@ public class ResultsActivity extends AppCompatActivity {
                     case R.id.videoOption:
                         viewPager.setCurrentItem(3);
                         menu.getItem(3).setChecked(true);
+                        break;
+
+                    case R.id.recommendationOption:
+                        viewPager.setCurrentItem(4);
+                        menu.getItem(4).setChecked(true);
                         break;
                 }
 
@@ -193,6 +215,39 @@ public class ResultsActivity extends AppCompatActivity {
                         });
                     }
                 }
+            }
+        });
+
+        mAdapter = new CustomCardAdapter(this, stringArrayList, mArrayList, 0);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiInterface.BASE_URL_RECOMMENDATION)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        Call<FoodRecommendationResult> mCall = apiInterface.getSimilarFoodItems(ResultsActivity.item);
+
+        mCall.enqueue(new Callback<FoodRecommendationResult>() {
+            @Override
+            public void onResponse(Call<FoodRecommendationResult> call, Response<FoodRecommendationResult> response) {
+                FoodRecommendationResult mResult = response.body();
+
+                assert mResult != null;
+                ArrayList<String> similarItems = mResult.getRecommendation();
+
+                for (String s : similarItems) {
+                    stringArrayList.add(s);
+                    mArrayList.add(new TopTenModel(s, "", R.drawable.rose));
+
+                    mAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FoodRecommendationResult> call, Throwable t) {
+                Log.i("ERROR", t.getMessage());
+
             }
         });
 

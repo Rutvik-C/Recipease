@@ -5,5 +5,6 @@
     <item android:title="Recipe" android:icon="@drawable/ic_chef" android:id="@+id/recipeOption" />
     <item android:title="Nutrition" android:icon="@drawable/ic_nutrient" android:id="@+id/nutritionOption" />
     <item android:title="Video" android:icon="@drawable/ic_youtube" android:id="@+id/videoOption" />
+    <item android:title="Recommendation" android:icon="@drawable/ic_home" android:id="@+id/recommendationOption"/>
 
 </menu>
