@@ -37,7 +37,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                 mMap.put("email", email);
                                 mMap.put("history", new ArrayList<String>());
                                 mMap.put("liked", new ArrayList<String>());
+                                mMap.put("user_choice", new ArrayList<>(Collections.nCopies(127, 0)));
 
 
                                 assert user != null;
@@ -167,22 +170,12 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                                     }
                                 });
 
-                                //firebaseDatabase = FirebaseDatabase.getInstance();
-                                //databaseReference = firebaseDatabase.getReference("users");
-                                // assert user != null;
-                                //databaseReference.child(user.getUid()).child("email").setValue(email);
-                                // Sign in success, update UI with the signed-in user's information
-                                //Log.d(TAG, "createUserWithEmail:success");
-
                             } else {
-                                // If sign in fails, display a message to the user.
-                                //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                //Toast.makeText(EmailPasswordActivity.this, "Authentication failed."Toast.LENGTH_SHORT).show();
                                 Log.i("FAIL", "Sign Up failed " + task.getException());
                                 Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
                             }
 
-                            // ...
                         }
                     });
 

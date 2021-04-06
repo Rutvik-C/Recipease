@@ -41,6 +41,7 @@ import java.util.HashMap;
 public class HomePage extends AppCompatActivity {
 
     public static Context contextOfApplication;
+    public static ArrayList<String> allItems;
 
 
     public void takeToResult(View view) {
@@ -72,6 +73,27 @@ public class HomePage extends AppCompatActivity {
         viewPager.setCurrentItem(2);
 
         contextOfApplication = getApplicationContext();
+
+        allItems = new ArrayList<>();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference allergenDocumentRef = db.collection("predictableItems").document("#Allergens");
+        allergenDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot mDocSnap = task.getResult();
+                    if (mDocSnap.exists()) {
+                        ArrayList<String> arrayList = (ArrayList<String>) mDocSnap.get("items");
+
+                        assert arrayList != null;
+                        allItems.clear();
+                        allItems.addAll(arrayList);
+
+                    }
+                }
+            }
+        });
 
     }
 

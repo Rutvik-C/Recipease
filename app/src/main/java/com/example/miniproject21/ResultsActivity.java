@@ -44,6 +44,7 @@ public class ResultsActivity extends AppCompatActivity {
     static Menu menu;
     public static String item;
     public static boolean cloudLiked;
+    public static ArrayList<Integer> currentIngredients;
 
     ArrayList<TopTenModel> mArrayList;
     ArrayList<String> stringArrayList;
@@ -65,6 +66,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         mArrayList = new ArrayList<>();
         stringArrayList = new ArrayList<>();
+        currentIngredients = new ArrayList<>();
 
         Log.i("INTENT", item);
 
@@ -170,11 +172,16 @@ public class ResultsActivity extends AppCompatActivity {
                                         }
                                         int count=0;
 
+                                        currentIngredients.clear();
+                                        Log.i("PRE FETCHED", "" + HomePage.allItems);
                                         for (String s1 : foodContents) {
+                                            Log.i("~", s1);
+                                            currentIngredients.add(HomePage.allItems.indexOf(s1));
+
                                             for (String s2 : userAllergen) {
                                                 if (s1.equals(s2)) {
                                                     if (count>0)
-                                                        result+=", "+s1;
+                                                        result += ", "+s1;
                                                     else {
                                                         result+="This dish may contain ";
                                                         result += s1 + " ";

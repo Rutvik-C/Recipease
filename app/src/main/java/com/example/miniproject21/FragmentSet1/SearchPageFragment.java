@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.miniproject21.CustomCardAdapter;
+import com.example.miniproject21.HomePage;
 import com.example.miniproject21.R;
 import com.example.miniproject21.ResultsActivity;
 import com.example.miniproject21.TopTenCard.TopTenModel;
@@ -111,6 +112,7 @@ public class SearchPageFragment extends Fragment {
                         } else {
                             Log.i("error", "Error getting documents.", task.getException());
                         }
+
                         foodArray = new String[keys.size()];
                         foodArray = keys.toArray(foodArray);
                         arrayAdapter = new ArrayAdapter<String>(view.getContext(), simple_list_item_1, foodArray);

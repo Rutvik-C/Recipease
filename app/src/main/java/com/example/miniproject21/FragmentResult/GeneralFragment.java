@@ -34,7 +34,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.lang.Math;
+import java.util.Arrays;
+
 
 public class GeneralFragment extends Fragment {
 
@@ -92,7 +94,26 @@ public class GeneralFragment extends Fragment {
                     db.collection("Users").document(mUser.getUid()).update("liked", FieldValue.arrayRemove(ResultsActivity.item));
 
                     imageView.setImageResource(R.drawable.ic_like);
-                }else{
+
+                    Log.i("ITEMS", " " + ResultsActivity.currentIngredients);
+                    db.collection("Users").document(mUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+                                ArrayList<Long> mArray = (ArrayList<Long>) documentSnapshot.get("user_choice");
+
+                                assert mArray != null;
+                                for (int i : ResultsActivity.currentIngredients) {
+                                    mArray.set(i, Math.max(mArray.get(i) - 2, 0));
+
+                                }
+
+                                db.collection("Users").document(mUser.getUid()).update("user_choice", mArray);
+                            }
+                        }
+                    });
+
+                } else {
                     ResultsActivity.cloudLiked=true;
                     Toast.makeText(getContext(), "Added to liked items", Toast.LENGTH_SHORT).show();
 
@@ -100,11 +121,29 @@ public class GeneralFragment extends Fragment {
                     db.collection("Users").document(mUser.getUid()).update("liked", FieldValue.arrayUnion(ResultsActivity.item));
 
                     imageView.setImageResource(R.drawable.ic_liked);
+
+                    Log.i("ITEMS", "" + ResultsActivity.currentIngredients);
+
+                    db.collection("Users").document(mUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+                                ArrayList<Long> mArray = (ArrayList<Long>) documentSnapshot.get("user_choice");
+
+                                assert mArray != null;
+                                for (int i : ResultsActivity.currentIngredients) {
+                                    mArray.set(i, Math.min(mArray.get(i) + 2, 10));
+
+                                }
+
+                                db.collection("Users").document(mUser.getUid()).update("user_choice", mArray);
+                            }
+                        }
+                    });
                 }
             }
         });
 
         return view;
     }
-
 }
