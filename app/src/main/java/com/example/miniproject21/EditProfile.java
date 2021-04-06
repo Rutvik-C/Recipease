@@ -199,7 +199,7 @@ public class EditProfile extends AppCompatActivity implements AdapterView.OnItem
                                int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
-
+        ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
         vegPreference=parent.getItemAtPosition(pos).toString();
         if(vegPreference.equals("Jain")){
             preference=0;
