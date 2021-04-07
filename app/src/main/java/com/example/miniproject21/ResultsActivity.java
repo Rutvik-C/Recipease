@@ -45,6 +45,7 @@ public class ResultsActivity extends AppCompatActivity {
     public static String item;
     public static boolean cloudLiked;
     public static ArrayList<Integer> currentIngredients;
+    public static String vLink;
 
     ArrayList<String> stringArrayList;
     @SuppressLint("StaticFieldLeak")
@@ -150,6 +151,9 @@ public class ResultsActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     DocumentSnapshot document = task.getResult();
                                     if (document != null && document.exists()) {
+
+                                        vLink = (String) document.get("v_link");
+
                                         String result = "";
 
                                         long foodCat = (long) document.get("category");

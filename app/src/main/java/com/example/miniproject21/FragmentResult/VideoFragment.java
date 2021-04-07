@@ -20,6 +20,7 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class VideoFragment extends Fragment {
     private YouTubePlayer YPlayer;
@@ -53,8 +54,8 @@ public class VideoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //TODO: Add video link in below string
-        final String url="JpVIUty7Suk";
+
+        final String url = ResultsActivity.vLink;
         YouTubePlayer.OnInitializedListener onInitializedListener = new
                 YouTubePlayer.OnInitializedListener() {
                     @Override
