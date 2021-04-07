@@ -46,7 +46,6 @@ public class ResultsActivity extends AppCompatActivity {
     public static boolean cloudLiked;
     public static ArrayList<Integer> currentIngredients;
 
-    ArrayList<TopTenModel> mArrayList;
     ArrayList<String> stringArrayList;
     @SuppressLint("StaticFieldLeak")
     public static CustomCardAdapter mAdapter;
@@ -64,7 +63,6 @@ public class ResultsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         item = intent.getStringExtra("item");
 
-        mArrayList = new ArrayList<>();
         stringArrayList = new ArrayList<>();
         currentIngredients = new ArrayList<>();
 
@@ -225,7 +223,7 @@ public class ResultsActivity extends AppCompatActivity {
             }
         });
 
-        mAdapter = new CustomCardAdapter(this, stringArrayList, mArrayList, 0);
+        mAdapter = new CustomCardAdapter(this, stringArrayList);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiInterface.BASE_URL_RECOMMENDATION)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -244,7 +242,6 @@ public class ResultsActivity extends AppCompatActivity {
 
                 for (String s : similarItems) {
                     stringArrayList.add(s);
-                    mArrayList.add(new TopTenModel(s, "", R.drawable.rose));
 
                     mAdapter.notifyDataSetChanged();
                 }

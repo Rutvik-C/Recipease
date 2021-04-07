@@ -13,6 +13,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/fetchingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fetching Data..."
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            card_view:layout_constraintEnd_toEndOf="@+id/topTenListView"
+            card_view:layout_constraintStart_toStartOf="@+id/topTenListView"
+            card_view:layout_constraintTop_toBottomOf="@+id/recommendationProgressBar" />
+
+        <ProgressBar
+            android:id="@+id/recommendationProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:indeterminateTint="@android:color/white"
+            card_view:layout_constraintBottom_toBottomOf="@+id/topTenListView"
+            card_view:layout_constraintEnd_toEndOf="@+id/topTenListView"
+            card_view:layout_constraintStart_toStartOf="@+id/topTenListView"
+            card_view:layout_constraintTop_toTopOf="@+id/topTenListView" />
+
         <ListView
             android:id="@+id/topTenListView"
             android:layout_width="match_parent"
@@ -27,8 +51,12 @@
             android:scrollbars="none"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/textSearch" />
+            card_view:layout_constraintTop_toBottomOf="@+id/textSearch"
+            card_view:layout_constraintVertical_bias="0.0">
+
+        </ListView>
 
         <TextView
             android:id="@+id/textSearch"

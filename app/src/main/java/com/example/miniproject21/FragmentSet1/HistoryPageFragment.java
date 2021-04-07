@@ -35,7 +35,6 @@ import java.util.Objects;
 
 
 public class HistoryPageFragment extends Fragment {
-    ArrayList<TopTenModel> historyArrayList;
     ArrayList<String> historyNameArrayList;
     ListView historyListView;
     CustomCardAdapter mCustomCardAdapter;
@@ -51,9 +50,8 @@ public class HistoryPageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         historyListView = view.findViewById(R.id.historyArrayList);
-        historyArrayList = new ArrayList<>();
         historyNameArrayList = new ArrayList<>();
-        mCustomCardAdapter = new CustomCardAdapter(getContext(), historyNameArrayList, historyArrayList, 0);
+        mCustomCardAdapter = new CustomCardAdapter(getContext(), historyNameArrayList);
         historyListView.setAdapter(mCustomCardAdapter);
 
         final Button editProfileButton=requireView().findViewById(R.id.editProfileButton);
@@ -82,10 +80,8 @@ public class HistoryPageFragment extends Fragment {
                         Log.i("DATA", value.getData().toString());
 
                         historyNameArrayList.clear();
-                        historyArrayList.clear();
                         for (String name : (ArrayList<String>) Objects.requireNonNull(value.get("history"))) {
                             historyNameArrayList.add(name);
-                            historyArrayList.add(new TopTenModel(name, "", R.drawable.rose));
 
                             mCustomCardAdapter.notifyDataSetChanged();
                         }

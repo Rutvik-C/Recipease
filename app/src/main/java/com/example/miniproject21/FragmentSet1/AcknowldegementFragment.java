@@ -1,6 +1,8 @@
 package com.example.miniproject21.FragmentSet1;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,9 +40,9 @@ public class AcknowldegementFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ListView myListView=(ListView)view.findViewById(R.id.urllist);
         final ArrayList<String> url= new ArrayList<String>();
-        url.add("https://hebbarskitchen.com/");
-        url.add("https://www.allrecipes.com/");
-        url.add("https://www.myfooddata.com/");
+        url.add("https://hebbarskitchen.com");
+        url.add("https://www.allrecipes.com");
+        url.add("https://www.myfooddata.com");
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, url){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -50,6 +53,14 @@ public class AcknowldegementFragment extends Fragment {
             }
         };
         myListView.setAdapter(adapter);
+
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.get(i)));
+                startActivity(browserIntent);
+            }
+        });
 
     }
 }

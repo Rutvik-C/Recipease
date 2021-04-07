@@ -18,9 +18,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.miniproject21.ApiHelper.ApiInterface;
+import com.example.miniproject21.ApiHelper.FoodRecommendationResult;
 import com.example.miniproject21.CustomCardAdapter;
 import com.example.miniproject21.HomePage;
 import com.example.miniproject21.R;
@@ -40,13 +43,20 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static android.R.layout.simple_list_item_1;
 
 public class SearchPageFragment extends Fragment {
-    ArrayList<TopTenModel> topTenArrayList;
     ArrayList<String> topNameArrayList;
     ListView topTenListView;
     CustomCardAdapter mCustomCardAdapter;
+    ProgressBar mProgressBar;
+    TextView fetchTextView;
 
     ArrayList<String> keys = new ArrayList<String>();
     String[] foodArray;
@@ -92,10 +102,12 @@ public class SearchPageFragment extends Fragment {
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        topTenArrayList = new ArrayList<>();
+        mProgressBar = view.findViewById(R.id.recommendationProgressBar);
+        fetchTextView = view.findViewById(R.id.fetchingTextView);
+
         topNameArrayList = new ArrayList<>();
         topTenListView = view.findViewById(R.id.topTenListView);
-        mCustomCardAdapter = new CustomCardAdapter(requireContext(), topNameArrayList, topTenArrayList, 1);
+        mCustomCardAdapter = new CustomCardAdapter(requireContext(), topNameArrayList);
         topTenListView.setAdapter(mCustomCardAdapter);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -121,22 +133,61 @@ public class SearchPageFragment extends Fragment {
                     }
                 });
 
-        CollectionReference mCollectionReference = db.collection("foodItems");
-        mCollectionReference.orderBy("search_count", Query.Direction.DESCENDING).limit(10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    topTenArrayList.clear();
-                    topNameArrayList.clear();
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                    for (QueryDocumentSnapshot mDocument : Objects.requireNonNull(task.getResult())) {
-                        topTenArrayList.add(new TopTenModel(mDocument.getId(), Objects.requireNonNull(mDocument.get("search_count")).toString(), R.drawable.rose));
-                        topNameArrayList.add(mDocument.getId());
-                        mCustomCardAdapter.notifyDataSetChanged();
-                    }
+        mProgressBar.setVisibility(View.VISIBLE);
+        fetchTextView.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiInterface.BASE_URL_RECOMMENDATION)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+
+        assert mUser != null;
+        Call<FoodRecommendationResult> mCall = apiInterface.getUserRecommendation(mUser.getUid());
+        mCall.enqueue(new Callback<FoodRecommendationResult>() {
+            @Override
+            public void onResponse(Call<FoodRecommendationResult> call, Response<FoodRecommendationResult> response) {
+                FoodRecommendationResult mResult = response.body();
+
+                assert mResult != null;
+                ArrayList<String> similarItems = mResult.getRecommendation();
+
+                topNameArrayList.clear();
+                for (String s : similarItems) {
+                    topNameArrayList.add(s);
+
+                    mCustomCardAdapter.notifyDataSetChanged();
                 }
+
+                mProgressBar.setVisibility(View.INVISIBLE);
+                fetchTextView.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<FoodRecommendationResult> call, Throwable t) {
+                Toast.makeText(getContext(), "Error fetching recommendations", Toast.LENGTH_SHORT).show();
+                mProgressBar.setVisibility(View.INVISIBLE);
+                fetchTextView.setVisibility(View.INVISIBLE);
             }
         });
+
+//        CollectionReference mCollectionReference = db.collection("foodItems");
+//        mCollectionReference.orderBy("search_count", Query.Direction.DESCENDING).limit(10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    topNameArrayList.clear();
+//
+//                    for (QueryDocumentSnapshot mDocument : Objects.requireNonNull(task.getResult())) {
+//                        // topTenArrayList.add(new TopTenModel(mDocument.getId(), Objects.requireNonNull(mDocument.get("search_count")).toString(), R.drawable.rose));
+//                        topNameArrayList.add(mDocument.getId());
+//                        mCustomCardAdapter.notifyDataSetChanged();
+//                    }
+//                }
+//            }
+//        });
 
         frameLayout.setOnTouchListener(autoOnTouch);
 

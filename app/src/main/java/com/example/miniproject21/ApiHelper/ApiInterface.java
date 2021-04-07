@@ -19,4 +19,6 @@ public interface ApiInterface {
     @GET("similar-recommendation")
     Call<FoodRecommendationResult> getSimilarFoodItems(@Query("item-name") String itemName);
 
+    @GET("user-recommendation")
+    Call<FoodRecommendationResult> getUserRecommendation(@Query("user-uid") String userUid);
 }

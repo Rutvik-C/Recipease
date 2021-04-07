@@ -26,15 +26,13 @@ import java.util.ArrayList;
 public class CustomCardAdapter extends ArrayAdapter<String> {
 
     Context mContext;
-    ArrayList<TopTenModel> mArrayList;
-    int mCategory;
+    ArrayList<String> mArrayList;
 
-    public CustomCardAdapter(@NonNull Context context, ArrayList<String> stringArrayList, ArrayList<TopTenModel> arrayList, int category) {
+    public CustomCardAdapter(@NonNull Context context, ArrayList<String> stringArrayList) {
         super(context, R.layout.custom_card, stringArrayList);
 
         this.mContext = context;
-        this.mArrayList = arrayList;
-        this.mCategory = category;
+        this.mArrayList = stringArrayList;
     }
 
     @NonNull
@@ -47,13 +45,9 @@ public class CustomCardAdapter extends ArrayAdapter<String> {
         TextView mTextView2 = view.findViewById(R.id.dishCountTextView);
         final ImageView mImageView = view.findViewById(R.id.dishImageView);
 
-        mTextView1.setText(mArrayList.get(position).getDishname());
+        mTextView1.setText(mArrayList.get(position));
 
-        if (mCategory == 1) {
-            mTextView2.setText(mArrayList.get(position).getDishcount());
-        }
-
-        StorageReference mRef = FirebaseStorage.getInstance().getReference("icons").child(mArrayList.get(position).getDishname() + ".png");
+        StorageReference mRef = FirebaseStorage.getInstance().getReference("icons").child(mArrayList.get(position) + ".png");
         mRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
