@@ -32,7 +32,7 @@ public class RecipeFragment extends Fragment {
     public static RecyclerView recipeRecyclerView;
     public ArrayList<RecipeCardModel> recipeArrayList;
 
-    public static RecyclerView infoRecyclerView;
+    public RecyclerView infoRecyclerView;
     public ArrayList<RecipeCardModel> infoArrayList;
 
     ArrayList<String> ingredients;
@@ -65,8 +65,8 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recipeRecyclerView = getActivity().findViewById(R.id.idRecipe);
-        infoRecyclerView=getActivity().findViewById(R.id.idRecipefirst);
+        recipeRecyclerView = view.findViewById(R.id.idRecipe);
+        infoRecyclerView=view.findViewById(R.id.idRecipefirst);
         ingredients = new ArrayList<String>();
         steps = new ArrayList<String>();
         infoArrayList=new ArrayList<>();
