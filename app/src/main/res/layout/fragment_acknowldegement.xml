@@ -18,6 +18,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
+            android:fontFamily="@font/dosis_semibold"
             android:text="Acknowledgements"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
