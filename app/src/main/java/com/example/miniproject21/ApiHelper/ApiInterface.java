@@ -9,7 +9,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
-    String BASE_URL_PREDICTOR = "http://52.224.53.3:5000/";
+    String BASE_URL_PREDICTOR = "http://52.186.83.93:5000/";
     String BASE_URL_RECOMMENDATION = "https://rutvik-food-recommendation.herokuapp.com/";
 
     @Multipart
