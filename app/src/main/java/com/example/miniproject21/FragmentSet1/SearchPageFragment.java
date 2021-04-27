@@ -107,7 +107,7 @@ public class SearchPageFragment extends Fragment {
 
         topNameArrayList = new ArrayList<>();
         topTenListView = view.findViewById(R.id.topTenListView);
-        mCustomCardAdapter = new CustomCardAdapter(requireContext(), topNameArrayList);
+        mCustomCardAdapter = new CustomCardAdapter(requireContext(), topNameArrayList, new ArrayList<Boolean>(), false);
         topTenListView.setAdapter(mCustomCardAdapter);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();

@@ -36,6 +36,7 @@ import java.util.Objects;
 
 public class HistoryPageFragment extends Fragment {
     ArrayList<String> historyNameArrayList;
+    ArrayList<Boolean> isLikedArrayList;
     ListView historyListView;
     CustomCardAdapter mCustomCardAdapter;
 
@@ -50,8 +51,9 @@ public class HistoryPageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         historyListView = view.findViewById(R.id.historyArrayList);
+        isLikedArrayList = new ArrayList<>();
         historyNameArrayList = new ArrayList<>();
-        mCustomCardAdapter = new CustomCardAdapter(getContext(), historyNameArrayList);
+        mCustomCardAdapter = new CustomCardAdapter(getContext(), historyNameArrayList, isLikedArrayList, true);
         historyListView.setAdapter(mCustomCardAdapter);
 
         final Button editProfileButton=requireView().findViewById(R.id.editProfileButton);
@@ -80,8 +82,12 @@ public class HistoryPageFragment extends Fragment {
                         Log.i("DATA", value.getData().toString());
 
                         historyNameArrayList.clear();
+                        isLikedArrayList.clear();
+
+                        ArrayList<String> likedItems = (ArrayList<String>) Objects.requireNonNull(value.get("liked"));
                         for (String name : (ArrayList<String>) Objects.requireNonNull(value.get("history"))) {
                             historyNameArrayList.add(name);
+                            isLikedArrayList.add(likedItems.contains(name));
 
                             mCustomCardAdapter.notifyDataSetChanged();
                         }

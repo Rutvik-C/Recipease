@@ -227,7 +227,7 @@ public class ResultsActivity extends AppCompatActivity {
             }
         });
 
-        mAdapter = new CustomCardAdapter(this, stringArrayList);
+        mAdapter = new CustomCardAdapter(this, stringArrayList, new ArrayList<Boolean>(), false);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiInterface.BASE_URL_RECOMMENDATION)
                 .addConverterFactory(GsonConverterFactory.create())

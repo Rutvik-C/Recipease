@@ -292,7 +292,7 @@ public class UploadPageFragment extends Fragment {
                         retryButton.setVisibility(View.INVISIBLE);
 
                     } else {
-                        String text = "The image is not a food item";
+                        String text = "The image does not contain any food item";
                         messageTextView.setText(text);
 
                         Log.i("NOT", "FOOD");

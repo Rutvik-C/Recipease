@@ -12,11 +12,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.miniproject21.TopTenCard.TopTenModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -27,12 +25,16 @@ public class CustomCardAdapter extends ArrayAdapter<String> {
 
     Context mContext;
     ArrayList<String> mArrayList;
+    ArrayList<Boolean> likedArrayList;
+    boolean showLikes;
 
-    public CustomCardAdapter(@NonNull Context context, ArrayList<String> stringArrayList) {
+    public CustomCardAdapter(@NonNull Context context, ArrayList<String> stringArrayList, ArrayList<Boolean> booleanArrayList, boolean isHistory) {
         super(context, R.layout.custom_card, stringArrayList);
 
         this.mContext = context;
         this.mArrayList = stringArrayList;
+        this.likedArrayList = booleanArrayList;
+        this.showLikes = isHistory;
     }
 
     @NonNull
@@ -42,10 +44,14 @@ public class CustomCardAdapter extends ArrayAdapter<String> {
         @SuppressLint("ViewHolder") View view = mLayoutInflater.inflate(R.layout.custom_card, null, true);
 
         TextView mTextView1 = view.findViewById(R.id.dishNameTextView);
-        TextView mTextView2 = view.findViewById(R.id.dishCountTextView);
         final ImageView mImageView = view.findViewById(R.id.dishImageView);
 
         mTextView1.setText(mArrayList.get(position));
+        if (showLikes && likedArrayList.get(position)) {
+            ImageView isLikedImageView = view.findViewById(R.id.likeHolderImageView);
+
+            isLikedImageView.setImageResource(R.drawable.ic_liked);
+        }
 
         StorageReference mRef = FirebaseStorage.getInstance().getReference("icons").child(mArrayList.get(position) + ".png");
         mRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

@@ -41,6 +41,15 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <ImageView
+            android:id="@+id/likeHolderImageView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_below="@+id/dishNameTextView"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/dishImageView" />
+
         <!--Text VIew to display COurse Rating-->
         <!--Image used in present in drawable folder-->
     </RelativeLayout>
