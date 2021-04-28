@@ -31,10 +31,10 @@
         <!--Text View to display Course Name-->
         <TextView
             android:id="@+id/dishNameTextView"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="40dp"
             android:layout_toEndOf="@id/dishImageView"
             android:textColor="@color/black"
@@ -46,8 +46,8 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_below="@+id/dishNameTextView"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="261dp"
+            android:layout_marginTop="-29dp"
             android:layout_toEndOf="@+id/dishImageView" />
 
         <!--Text VIew to display COurse Rating-->
