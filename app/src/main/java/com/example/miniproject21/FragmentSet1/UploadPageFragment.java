@@ -123,88 +123,6 @@ public class UploadPageFragment extends Fragment {
         });
     }
 
-    public void makePredictions() {
-
-        if (bitmap != null) {
-            subTypesReady = false;
-
-            progressBar.setVisibility(View.VISIBLE);
-            try {
-                Predictor predictor = new Predictor();
-
-                int index = predictor.execute(bitmap).get();
-
-                predicted = true;
-
-                getSubTypes(CLASSES.get(index));
-                gotoResultButton.setText(CLASSES.get(index));
-                gotoResultButton.setVisibility(View.VISIBLE);
-                retryButton.setVisibility(View.INVISIBLE);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            Toast.makeText(getActivity(), "Please select an Image", Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    public static class Predictor extends AsyncTask<Bitmap, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(Bitmap... bitmaps) {
-            Bitmap bitmap = bitmaps[0];
-
-            Bitmap finalBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true);
-            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(224 * 224 * 3 * 4).order(ByteOrder.nativeOrder());
-            for (int y = 0; y < 224; y++) {
-                for (int x = 0; x < 224; x++) {
-                    int px = finalBitmap.getPixel(x, y);
-
-                    float r = Color.red(px) / 255.0f;
-                    float g = Color.green(px) / 255.0f;
-                    float b = Color.blue(px) / 255.0f;
-
-                    byteBuffer.putFloat(r);
-                    byteBuffer.putFloat(g);
-                    byteBuffer.putFloat(b);
-                }
-            }
-
-            Log.i("Reached", "pixels adjusted!");
-
-            int bufferSize = LEN_CLASSES * Float.SIZE / Byte.SIZE;
-            ByteBuffer modelOutput = ByteBuffer.allocateDirect(bufferSize).order(ByteOrder.nativeOrder());
-            interpreter.run(byteBuffer, modelOutput);
-
-            modelOutput.rewind();
-            FloatBuffer probabilities = modelOutput.asFloatBuffer();
-
-            Log.i("HERE", "Reached before try " + probabilities.capacity());
-
-            int maxIndex = 0;
-            float max = -1;
-
-            for (int i = 0; i < probabilities.capacity(); i++) {
-                if (probabilities.get(i) > max) {
-                    max = probabilities.get(i);
-                    maxIndex = i;
-                }
-            }
-
-            return maxIndex;
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-    }
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_PERMISSION_CODE) {
@@ -356,12 +274,6 @@ public class UploadPageFragment extends Fragment {
                     .setAspectRatio(1, 1)
                     .start(getContext(), this);
 
-//            if (photo.getHeight() >= photo.getWidth()) {
-//                bitmap = Bitmap.createBitmap(photo, 0, photo.getHeight() / 2 - photo.getWidth() / 2, photo.getWidth(), photo.getWidth());
-//            } else {
-//                bitmap = Bitmap.createBitmap(photo, photo.getWidth() / 2 - photo.getHeight() / 2, 0, photo.getHeight(), photo.getHeight());
-//            }
-
         }
 
         // Image from gallery
@@ -424,13 +336,6 @@ public class UploadPageFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
-//        try {
-//            interpreter = new Interpreter(loadModel());
-//            Log.i("Done", "Model loaded");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
         imageView = view.findViewById(R.id.imageViewSelectImage);
 
@@ -529,16 +434,5 @@ public class UploadPageFragment extends Fragment {
 
         return view;
     }
-
-//    private MappedByteBuffer loadModel() throws IOException {
-//        assert getContext() != null;
-//        AssetFileDescriptor assetFileDescriptor = getContext().getAssets().openFd("FoodClassifier40_81.tflite");
-//        FileInputStream fileInputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
-//        FileChannel fileChannel = fileInputStream.getChannel();
-//        long startOffset = assetFileDescriptor.getStartOffset();
-//        long declaredLength = assetFileDescriptor.getDeclaredLength();
-//
-//        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-//    }
 
 }
