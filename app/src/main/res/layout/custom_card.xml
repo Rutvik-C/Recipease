@@ -46,9 +46,9 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_below="@+id/dishNameTextView"
-            android:layout_marginStart="261dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="-29dp"
-            android:layout_toEndOf="@+id/dishImageView" />
+            android:layout_marginEnd="16dp" />
 
         <!--Text VIew to display COurse Rating-->
         <!--Image used in present in drawable folder-->

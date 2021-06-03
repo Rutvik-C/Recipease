@@ -3,6 +3,7 @@ package com.example.miniproject21;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class CustomCardAdapter extends ArrayAdapter<String> {
 
         mTextView1.setText(mArrayList.get(position));
         if (showLikes && likedArrayList.get(position)) {
+            Log.i("ADAPTER", "Setting resource...");
             ImageView isLikedImageView = view.findViewById(R.id.likeHolderImageView);
 
             isLikedImageView.setImageResource(R.drawable.ic_liked);

@@ -59,6 +59,7 @@ import java.nio.FloatBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -151,7 +152,7 @@ public class UploadPageFragment extends Fragment {
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "recipease", null);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Recipease_" + Calendar.getInstance().getTime(), null);
         return Uri.parse(path);
     }
 
@@ -266,7 +267,11 @@ public class UploadPageFragment extends Fragment {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
 
+            Log.i("REC", "received");
+
             Uri tempUri = saveBitmapImage(getContext(), photo);
+
+            Log.i("URI REC", "received uri");
 
             CropImage.activity(tempUri)
                     .setGuidelines(CropImageView.Guidelines.ON)

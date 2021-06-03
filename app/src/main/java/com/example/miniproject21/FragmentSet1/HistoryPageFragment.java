@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -88,6 +89,8 @@ public class HistoryPageFragment extends Fragment {
                         for (String name : (ArrayList<String>) Objects.requireNonNull(value.get("history"))) {
                             historyNameArrayList.add(name);
                             isLikedArrayList.add(likedItems.contains(name));
+
+                            Log.i("HERE", historyNameArrayList + " " + isLikedArrayList);
 
                             mCustomCardAdapter.notifyDataSetChanged();
                         }
