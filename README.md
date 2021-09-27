@@ -7,5 +7,5 @@ Android application for detecting food item in an image
 4. Provides recipe, video recipe, nutritional values, and similar items for a selected item
 
 ### Note
-This application is being updated
+This application is being updated.
 You can find a stable working version of the application here: https://github.com/malharbangdiwala/MiniProject21
