@@ -9,3 +9,17 @@ Android application for detecting food item in an image
 ### Note
 This application is being updated.
 You can find a stable working version of the application here: https://github.com/malharbangdiwala/MiniProject21
+
+### Screenshots
+<p align="center">
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153830_Recipease.jpg"/>    
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153525_Recipease.jpg"/>
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot%20(603).png"/><br>
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153548_Recipease.jpg"/>
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153815_Recipease.jpg"/>
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153515_Recipease.jpg"/>
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153605_Recipease.jpg"/><br>
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153617_Recipease.jpg"/>
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153626_Recipease.jpg"/>
+  <img alt="SQL" width="200px" src="https://github.com/Rutvik-C/Recipease/blob/master/image/Screenshot_20210928-153642_Recipease.jpg"/>
+</p>
